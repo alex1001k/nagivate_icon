@@ -1,0 +1,80 @@
+{
+  "unit": "Розница",
+  "period": "2026-06",
+  "blocks": [
+    {
+      "group_id": "acquisition",
+      "group_label": "Привлечение клиентов",
+      "facts": [
+        {
+          "metric": "Трафик на витрину продукта",
+          "role": "driver",
+          "triggered": true,
+          "direction": "down",
+          "s_measure": "тыс. визитов",
+          "fact_value": 410,
+          "prev_fact_value": 505,
+          "execution_percent": 81.0,
+          "delta_abs": -95,
+          "delta_pct": -18.8
+        },
+        {
+          "metric": "Конверсия в заявку",
+          "role": "driver",
+          "triggered": true,
+          "direction": "down",
+          "s_measure": "%",
+          "fact_value": 17.9,
+          "prev_fact_value": 22.8,
+          "execution_percent": 76.4,
+          "delta_abs": -4.9,
+          "delta_pct": -21.5
+        },
+        {
+          "metric": "Заявки поданы",
+          "role": "output",
+          "triggered": true,
+          "direction": "down",
+          "s_measure": "шт.",
+          "fact_value": 6180,
+          "prev_fact_value": 11510,
+          "execution_percent": 63.0,
+          "delta_abs": -5330,
+          "delta_pct": -46.3
+        }
+      ]
+    },
+    {
+      "group_id": "service",
+      "group_label": "Клиентский сервис",
+      "facts": [
+        {
+          "metric": "Жалобы",
+          "role": "related",
+          "triggered": true,
+          "direction": "down",
+          "higher_is_better": false,
+          "s_measure": "шт.",
+          "fact_value": 340,
+          "prev_fact_value": 210,
+          "execution_percent": 155.0,
+          "delta_abs": 130,
+          "delta_pct": 61.9
+        },
+        {
+          "metric": "NPS",
+          "role": "related",
+          "triggered": false,
+          "direction": "flat",
+          "higher_is_better": true,
+          "s_measure": "баллы",
+          "fact_value": 61,
+          "prev_fact_value": 60,
+          "execution_percent": 101.0,
+          "delta_abs": 1,
+          "delta_pct": 1.7
+        }
+      ]
+    }
+  ]
+}
