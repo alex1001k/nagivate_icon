@@ -1,22 +1,3 @@
----------------------------------------------------------------------------
-ValueError                                Traceback (most recent call last)
-/tmp/ipykernel_3036545/3803350493.py in <module>
-     27 fact = pd.read_csv('fact_pokazateli.csv', parse_dates=['date_'])
-     28 dim = pd.read_csv('dim_pokazateli.csv')
----> 29 dim_by_id = dim.set_index('id_pokaz').to_dict('index')
-     30 
-     31 # связи "показатель <- драйвер" -- многие-ко-многим, отдельной таблицей: у показателя
-
-/opt/Anaconda3/python-anaconda3-2021/lib/python3.9/site-packages/pandas/core/frame.py in to_dict(self, orient, into)
-   1826         elif orient == "index":
-   1827             if not self.index.is_unique:
--> 1828                 raise ValueError("DataFrame index must be unique for orient='index'.")
-   1829             return into_c(
-   1830                 (t[0], dict(zip(self.columns, t[1:])))
-
-ValueError: DataFrame index must be unique for orient='index'.
-
-
 # -*- coding: utf-8 -*-
 """
 Расчёт отклонений (инсайтов) по фактам и генерация текстовых брифов.
@@ -45,6 +26,23 @@ import random
 
 fact = pd.read_csv('fact_pokazateli.csv', parse_dates=['date_'])
 dim = pd.read_csv('dim_pokazateli.csv')
+
+# id_pokaz должен встречаться в dim_pokazateli.csv ровно один раз -- проверяем ДО
+# set_index/to_dict('index'), потому что при дублях эти вызовы падают сами с невнятным
+# ValueError ("index must be unique"), не успевая дойти до _validate_inputs() ниже
+dup_ids = dim['id_pokaz'][dim['id_pokaz'].duplicated()].unique().tolist()
+if dup_ids:
+    dup_rows = dim[dim['id_pokaz'].isin(dup_ids)].sort_values('id_pokaz')
+    raise SystemExit(
+        f"В dim_pokazateli.csv id_pokaz повторяется {len(dup_ids)} раз(а): {dup_ids[:5]}\n"
+        "Каждый показатель должен встречаться в справочнике ровно один раз -- иначе непонятно, "
+        "какую строку метаданных (screen/category/direction/...) брать для расчёта.\n"
+        "Частая причина -- показатель выгружен отдельной строкой на каждый экран/период, или "
+        "файл склеен из нескольких выгрузок без дедупликации.\n"
+        f"Дублирующиеся строки (первые {min(10, len(dup_rows))} из {len(dup_rows)}):\n"
+        f"{dup_rows.head(10).to_string()}"
+    )
+
 dim_by_id = dim.set_index('id_pokaz').to_dict('index')
 
 # связи "показатель <- драйвер" -- многие-ко-многим, отдельной таблицей: у показателя
@@ -62,10 +60,6 @@ def _validate_inputs(fact, dim, dim_by_id, driver_links):
     заэкранированные запятые в текстовом поле, из-за чего колонки съезжают) падал тут с
     понятным сообщением, а не KeyError-ом где-то в середине цикла по фактам."""
     problems = []
-
-    dup_ids = dim['id_pokaz'][dim['id_pokaz'].duplicated()].unique().tolist()
-    if dup_ids:
-        problems.append(f"В dim_pokazateli.csv повторяются id_pokaz: {dup_ids[:5]}")
 
     missing_in_dim = sorted(set(fact['id_pokaz']) - set(dim_by_id.keys()))
     if missing_in_dim:
