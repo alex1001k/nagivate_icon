@@ -1,3 +1,17 @@
+---------------------------------------------------------------------------
+KeyError                                  Traceback (most recent call last)
+/tmp/ipykernel_3036545/2065267617.py in <module>
+     48 for pid, g in fact.groupby('id_pokaz'):
+     49     g = g.sort_values('date_').reset_index(drop=True)
+---> 50     direction = dim_by_id[pid]['direction']
+     51     facts_hist = []
+     52     dates_hist = []
+
+KeyError: ' Цифровой помощник по пенсии расчёт, госпенсия, каталог продуктов'
+
+
+
+
 """
 Отчёт: выполнение целей по юнитам.
 Источник данных: колонки unit_name, metric_name, d_date, n_dynamic, dynamic_type,
