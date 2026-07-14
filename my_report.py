@@ -1,3 +1,22 @@
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+/tmp/ipykernel_3036545/3803350493.py in <module>
+     27 fact = pd.read_csv('fact_pokazateli.csv', parse_dates=['date_'])
+     28 dim = pd.read_csv('dim_pokazateli.csv')
+---> 29 dim_by_id = dim.set_index('id_pokaz').to_dict('index')
+     30 
+     31 # связи "показатель <- драйвер" -- многие-ко-многим, отдельной таблицей: у показателя
+
+/opt/Anaconda3/python-anaconda3-2021/lib/python3.9/site-packages/pandas/core/frame.py in to_dict(self, orient, into)
+   1826         elif orient == "index":
+   1827             if not self.index.is_unique:
+-> 1828                 raise ValueError("DataFrame index must be unique for orient='index'.")
+   1829             return into_c(
+   1830                 (t[0], dict(zip(self.columns, t[1:])))
+
+ValueError: DataFrame index must be unique for orient='index'.
+
+
 # -*- coding: utf-8 -*-
 """
 Расчёт отклонений (инсайтов) по фактам и генерация текстовых брифов.
