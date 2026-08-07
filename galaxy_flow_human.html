@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--surface-2);color:var(--text-primary);padding:32px 24px 40px;font-size:13px}
+
+.row{display:flex;justify-content:center;gap:12px;margin-bottom:4px}
+.arrow-row{display:flex;justify-content:center;align-items:center;gap:0;margin:6px 0;color:var(--text-muted);font-size:18px;line-height:1}
+.arrow-fan{display:flex;justify-content:center;gap:0;margin:6px 0}
+
+/* источники */
+.src{
+  border:1.5px solid var(--border-strong);border-radius:8px;
+  padding:7px 16px;font-size:12px;color:var(--text-secondary);
+  background:var(--surface-1);white-space:nowrap;
+}
+
+/* этапы */
+.box{border-radius:10px;padding:14px 18px;text-align:center;width:100%}
+.box .title{font-size:14px;font-weight:500;margin-bottom:6px}
+.box .sub{font-size:12px;color:var(--text-secondary);line-height:1.55}
+.box .note{font-size:11px;margin-top:8px;padding:6px 10px;border-radius:6px;line-height:1.5}
+
+.teal{background:var(--bg-success);border:1.5px solid var(--border-success)}
+.teal .title{color:var(--text-success)}
+
+.purple{background:#EEEDFE;border:1.5px solid #AFA9EC}
+.purple .title{color:#3C3489}
+.purple .sub{color:#534AB7}
+
+.amber{background:#FAEEDA;border:1.5px solid #EF9F27}
+.amber .title{color:#633806}
+
+.blue{background:#E6F1FB;border:1.5px solid #85B7EB}
+.blue .title{color:#0C447C}
+.blue .sub{color:#185FA5}
+
+.coral{background:#FAECE7;border:1.5px solid #F0997B}
+.coral .title{color:#4A1B0C}
+
+.gray{background:var(--surface-1);border:1.5px solid var(--border-strong)}
+.gray .title{color:var(--text-primary)}
+
+.note-green{background:var(--bg-success);color:var(--text-success)}
+.note-amber{background:#FAEEDA;color:#633806}
+
+/* стрелка одна */
+.arr{text-align:center;color:var(--text-muted);font-size:20px;line-height:1;margin:4px 0}
+
+/* стрелки-веер */
+.fan-wrap{position:relative;height:36px;display:flex;align-items:center;justify-content:center;margin:2px 0}
+.fan-line{position:absolute;top:0;bottom:0;border-left:1.5px solid var(--border-strong)}
+
+/* footer */
+.footer{text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted);font-style:italic}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Схема работы Galaxy — 7 этапов от источников до Governance</h2>
+
+<!-- Источники -->
+<div class="row" style="gap:8px;margin-bottom:10px">
+  <div class="src">CRM</div>
+  <div class="src">ERP / 1С</div>
+  <div class="src">Склад</div>
+  <div class="src">Биллинг</div>
+  <div class="src">SaaS / API</div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 1+2 -->
+<div class="row" style="gap:16px;max-width:680px;margin:0 auto 4px">
+  <div class="box teal" style="max-width:300px">
+    <div class="title">1. Подключается, не копирует</div>
+    <div class="sub">Galaxy заходит в каждую систему как читатель.<br>Ваши данные никуда не переезжают — остаются в Snowflake, 1С, Salesforce.<br>Нестандартная система? Коннектор генерируется за час.</div>
+  </div>
+  <div class="box teal" style="max-width:300px">
+    <div class="title">2. Составляет инвентарь</div>
+    <div class="sub">Обходит все таблицы и записывает: что как называется, какого типа, как связано.<br>Это как опись всех складов — без интерпретации, просто факты.<br>При изменениях в источнике — замечает автоматически.</div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 3 -->
+<div style="max-width:620px;margin:0 auto 4px">
+  <div class="box purple">
+    <div class="title">3. AI переводит таблицы на бизнес-язык</div>
+    <div class="sub">
+      Языковая модель смотрит на схемы и понимает: <b>Accounts</b> в CRM, <b>customers</b> в PostgreSQL и <b>Контрагенты</b> в 1С — это одно и то же. Это «Клиент».<br><br>
+      Предлагает сущности: Клиент · Сделка · Продукт · Платёж<br>
+      Предлагает связи: Клиент → Сделка → Продукт → Платёж<br>
+      Предлагает метрики: Выручка = SUM(amount) WHERE status = 'paid'
+    </div>
+    <div class="note note-amber">⚠️ AI предлагает — человек решает. Объединил физлиц и юрлиц? Аналитик разделит. Galaxy запомнит.</div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 4а + 4б -->
+<div class="row" style="gap:16px;max-width:680px;margin:0 auto 4px">
+  <div class="box amber" style="max-width:300px">
+    <div class="title">4а. Человек проверяет и утверждает</div>
+    <div class="sub">
+      Аналитик видит что предложил AI и подтверждает или правит.<br><br>
+      Финансовый директор утверждает формулу выручки.<br>
+      С этого момента она единственная и официальная — для всех отчётов и для AI-агента.
+    </div>
+  </div>
+  <div class="box amber" style="max-width:300px">
+    <div class="title">4б. Система склеивает одинаковых</div>
+    <div class="sub">
+      «ООО Ромашка» в CRM и «Ромашка ООО» в биллинге — это один клиент или два?<br><br>
+      Galaxy смотрит на ИНН, телефон, имя и говорит: вероятность 97% — один.<br>
+      Результат: единый клиент собранный из всех трёх систем.
+    </div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 5 -->
+<div style="max-width:620px;margin:0 auto 4px">
+  <div class="box blue">
+    <div class="title">5. Онтологический граф — единый мозг</div>
+    <div class="sub">
+      Всё что утверждено — живёт здесь:<br><br>
+      <b>Сущности:</b> Клиент, Сделка, Продукт, Платёж, Юнит<br>
+      <b>Метрики:</b> Выручка нетто = SUM(amount) WHERE status='paid' · LTV · Churn Rate<br>
+      <b>Правила:</b> кто owner, какие ограничения, как считать активного клиента<br>
+      <b>Доступ:</b> менеджер видит свой юнит, финдир — всё<br>
+      <b>История:</b> каждое изменение формулы версионируется
+    </div>
+    <div class="note note-green">↻ Граф живой: поменялась схема в источнике → Galaxy замечает → предлагает обновить</div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 6: потребители -->
+<div class="row" style="gap:12px;max-width:680px;margin:0 auto 4px">
+  <div class="box coral" style="max-width:200px">
+    <div class="title">Дашборд</div>
+    <div class="sub">Tableau, Power BI берут метрику из графа.<br>Одна формула выручки — в любом отчёте.</div>
+  </div>
+  <div class="box coral" style="max-width:200px">
+    <div class="title">AI-агент</div>
+    <div class="sub">Вопрос → ищет в графе → строит SQL → отвечает.<br>Не угадывает — идёт по правилам.<br>Объясняет откуда данные.</div>
+  </div>
+  <div class="box coral" style="max-width:200px">
+    <div class="title">Аналитик</div>
+    <div class="sub">Ad-hoc запрос через граф.<br>Видит lineage: откуда цифра, кто утвердил, когда.</div>
+  </div>
+</div>
+<div class="arr">↓</div>
+
+<!-- 7 -->
+<div style="max-width:620px;margin:0 auto">
+  <div class="box gray">
+    <div class="title">7. Governance — встроен, не прикручен</div>
+    <div class="sub" style="text-align:left;max-width:520px;margin:0 auto">
+      Поскольку все идут через граф — Galaxy всё видит автоматически:<br><br>
+      <b>Ролевой доступ:</b> настраивается в графе, работает для человека и AI<br>
+      <b>Аудит:</b> кто, что и когда запрашивал — логируется без дополнительных настроек<br>
+      <b>Lineage:</b> от исходной таблицы → через трансформацию → до цифры в отчёте
+    </div>
+  </div>
+</div>
+
+<div class="footer">Одна цифра · Одно определение · Везде одинаково — для человека и для AI</div>
+</body>
+</html>
