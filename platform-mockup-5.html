@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Единое окно аналитики</title>
+<style>
+:root{
+  --forest:#12352A;
+  --forest-2:#1B4A3A;
+  --ink:#1A211E;
+  --paper:#F7F6F2;
+  --card:#FFFFFF;
+  --line:#E2E0D9;
+  --line-soft:#EDEBE4;
+  --stone:#787E79;
+  --moss:#3E7D4F;
+  --amber:#B8860B;
+  --crimson:#A8321F;
+  --slate:#4A6E8A;
+  --side-bg:#F0EEE7;
+  --pin-bg:#EFE8D8;
+  --pin-border:#DFD3AE;
+}
+html.dark{
+  --forest:#4FBF87;
+  --forest-2:#6FD4A0;
+  --ink:#EDEEEA;
+  --paper:#141815;
+  --card:#1D2320;
+  --line:#323830;
+  --line-soft:#282E29;
+  --stone:#8B9289;
+  --moss:#4FBF87;
+  --amber:#E0B84F;
+  --crimson:#E8776A;
+  --slate:#7FA8C9;
+  --side-bg:#1A211D;
+  --pin-bg:#26301F;
+  --pin-border:#3A4A2E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);
+  font-size:14px;line-height:1.5;min-height:100vh;
+  transition:background .2s,color .2s;
+}
+
+/* ── Шапка ── */
+.top{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 26px;border-bottom:1px solid var(--line);
+  background:var(--card);position:sticky;top:0;z-index:20;
+  transition:background .2s,border-color .2s;
+}
+.brand{font-size:14px;font-weight:600;color:var(--forest);letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.top-meta{margin-left:auto;font-size:11.5px;color:var(--stone);
+  display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
+.top-meta i{width:6px;height:6px;border-radius:50%;background:var(--moss);display:block}
+
+.theme-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.theme-btn:hover{border-color:var(--forest);color:var(--forest)}
+.theme-btn svg{width:16px;height:16px}
+.theme-btn .sun{display:none}
+html.dark .theme-btn .moon{display:none}
+html.dark .theme-btn .sun{display:block}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px 60px;
+  display:grid;grid-template-columns:1fr 264px;gap:34px;align-items:start}
+
+/* ══ ЦЕНТР: строка запроса ══ */
+.hero{padding:46px 0 30px;text-align:center}
+.hero-h{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.hero-sub{font-size:13.5px;color:var(--stone);margin-bottom:26px}
+
+.searchbox{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:26px;padding:6px 6px 6px 20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  transition:border-color .16s,box-shadow .16s,background .2s;
+}
+.searchbox:focus-within{border-color:var(--forest);box-shadow:0 3px 14px rgba(18,53,42,.09)}
+.searchbox svg{flex-shrink:0;color:var(--stone)}
+.searchbox input{
+  flex:1;border:none;outline:none;background:none;
+  font-family:inherit;font-size:14.5px;color:var(--ink);padding:9px 0;
+}
+.searchbox input::placeholder{color:var(--stone)}
+.go{
+  padding:10px 22px;border:none;border-radius:20px;background:var(--forest);
+  color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:background .15s;
+}
+html.dark .go{color:#0C1A12}
+.go:hover{background:var(--forest-2)}
+
+.suggest{display:flex;gap:7px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.sg{
+  font-size:12.5px;padding:7px 15px;border-radius:20px;
+  border:1px solid var(--line);background:var(--card);color:var(--stone);
+  cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.sg:hover{border-color:var(--forest);color:var(--forest)}
+
+/* ══ ЛЕНТА ══ */
+.feed-bar{
+  display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid var(--line);margin-bottom:2px;
+}
+.fb-tab{
+  padding:11px 2px;font-size:13.5px;color:var(--stone);cursor:pointer;
+  border:none;background:none;font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;
+}
+.fb-tab:hover{color:var(--ink)}
+.fb-tab.on{color:var(--forest);border-bottom-color:var(--forest);font-weight:600}
+.fb-count{margin-left:auto;font-size:11.5px;color:var(--stone)}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;margin-top:9px;cursor:pointer;
+  display:grid;grid-template-columns:3px 1fr auto;gap:15px;align-items:start;
+  transition:border-color .15s,box-shadow .15s,background .2s;
+}
+.card:hover{border-color:var(--forest);box-shadow:0 2px 10px rgba(18,53,42,.06)}
+.sev{align-self:stretch;border-radius:2px;min-height:44px}
+.crit{background:var(--crimson)}
+.std{background:var(--amber)}
+.low{background:var(--slate)}
+.c-body{min-width:0}
+.c-kicker{
+  display:flex;align-items:center;gap:8px;margin-bottom:5px;
+  font-size:11px;color:var(--stone);flex-wrap:wrap;
+}
+.c-kicker b{color:var(--forest);font-weight:600}
+.badge{
+  font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;
+  letter-spacing:.03em;text-transform:uppercase;
+}
+.b-watch{background:#E8EFEA;color:var(--forest)}
+.b-wow{background:#F5EFDF;color:var(--amber)}
+html.dark .b-watch{background:#1C2E22}
+html.dark .b-wow{background:#2E2916}
+.c-title{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:5px}
+.c-text{font-size:13px;color:var(--stone);line-height:1.5}
+.c-act{
+  font-size:12px;color:var(--forest);font-weight:600;white-space:nowrap;
+  align-self:center;opacity:0;transition:opacity .15s;
+}
+.card:hover .c-act{opacity:1}
+.more{
+  width:100%;padding:12px;margin-top:12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--card);color:var(--stone);
+  font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s;
+}
+.more:hover{border-color:var(--forest);color:var(--forest)}
+
+/* ══ ПРАВАЯ КОЛОНКА ══ */
+.side{position:sticky;top:76px}
+
+.side-block{
+  background:var(--side-bg);border:1px solid var(--line);
+  border-radius:14px;padding:16px 15px;margin-bottom:16px;
+  transition:background .2s,border-color .2s;
+}
+.side-h{
+  font-size:12px;font-weight:700;color:var(--forest);
+  letter-spacing:.02em;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px;
+}
+.side-h svg{width:15px;height:15px;flex-shrink:0}
+
+.hist{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+}
+.hist:last-of-type{margin-bottom:0}
+.hist:hover{border-color:var(--forest);box-shadow:0 2px 8px rgba(18,53,42,.05)}
+.h-q{font-size:13px;font-weight:600;line-height:1.35;margin-bottom:5px}
+.h-meta{font-size:11px;color:var(--stone);display:flex;align-items:center;gap:6px}
+.h-dot{width:3px;height:3px;border-radius:50%;background:var(--line);display:block}
+.h-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;padding:2px 7px;border-radius:4px;
+  background:var(--line-soft);color:var(--stone);margin-top:8px;
+}
+
+/* превью дашборда — сетка тайлов */
+.h-prev-dash{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+  margin-top:10px;height:44px;
+}
+.h-prev-dash i{
+  background:var(--line-soft);border-radius:3px;display:block;position:relative;
+  overflow:hidden;
+}
+.h-prev-dash i::after{
+  content:'';position:absolute;left:4px;right:4px;bottom:4px;height:2px;
+  background:var(--forest);border-radius:1px;opacity:.4;
+}
+.h-prev-dash i.a::after{width:60%}
+.h-prev-dash i.b::after{width:80%}
+.h-prev-dash i.c::after{width:40%}
+.h-prev-dash i.d::after{width:70%}
+.h-prev-dash i.e::after{width:50%}
+.h-prev-dash i.f::after{width:90%}
+
+/* превью разбора причины — цепочка узлов */
+.h-prev-chain{
+  display:flex;align-items:center;gap:3px;margin-top:10px;height:30px;
+}
+.h-prev-chain .node{
+  flex:1;height:20px;border-radius:4px;background:var(--line-soft);
+  position:relative;
+}
+.h-prev-chain .node.hot{background:#F1DAD5}
+.h-prev-chain .node.warm{background:#F3EDDA}
+html.dark .h-prev-chain .node.hot{background:#3A2420}
+html.dark .h-prev-chain .node.warm{background:#332C18}
+.h-prev-chain .arrow{color:var(--line);font-size:10px;flex-shrink:0}
+
+.side-all{
+  display:block;width:100%;padding:9px;border:1px dashed var(--line);
+  border-radius:10px;background:none;color:var(--stone);
+  font-family:inherit;font-size:12px;cursor:pointer;margin-top:10px;
+}
+.side-all:hover{border-color:var(--forest);color:var(--forest)}
+
+.pin{
+  display:flex;align-items:center;gap:9px;padding:9px 11px;
+  background:var(--pin-bg);border:1px solid var(--pin-border);border-radius:8px;
+  margin-bottom:6px;cursor:pointer;font-size:12.5px;transition:all .15s;
+}
+.pin:last-child{margin-bottom:0}
+.pin:hover{border-color:var(--amber)}
+.pin i.dot{width:7px;height:7px;border-radius:2px;display:block;flex-shrink:0}
+.pin span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pin b{font-size:11px;color:var(--stone);font-weight:400;font-variant-numeric:tabular-nums}
+.pin-spark{display:flex;align-items:flex-end;gap:1.5px;height:16px;flex-shrink:0}
+.pin-spark i{width:3px;background:var(--line-soft);border-radius:1px;display:block}
+.pin-spark i.hi{background:currentColor}
+
+@media(max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;order:2}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="brand">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/>
+    </svg>
+    Аналитика
+  </span>
+  <span class="top-meta"><i></i>Данные на 16.08.2026, 06:40</span>
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Переключить тему">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ ЦЕНТРАЛЬНАЯ КОЛОНКА ══ -->
+  <div>
+    <div class="hero">
+      <div class="hero-h">Что хотите узнать?</div>
+      <div class="hero-sub">Спросите про метрику, продукт или сегмент — отчёт соберётся под вопрос</div>
+
+      <div class="searchbox">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input placeholder="Например: как дела с вкладами · почему упала конверсия · сравни каналы"/>
+        <button class="go">Спросить</button>
+      </div>
+
+      <div class="suggest">
+        <button class="sg">Мои цели на квартал</button>
+        <button class="sg">Как дела с вкладами</button>
+        <button class="sg">Почему упала маржа</button>
+        <button class="sg">Сравни розницу и корпоратив</button>
+      </div>
+    </div>
+
+    <!-- Лента -->
+    <div class="feed-bar">
+      <button class="fb-tab on">Всё важное</button>
+      <button class="fb-tab">Отклонения</button>
+      <button class="fb-tab">Инсайты</button>
+      <button class="fb-tab">Мои подписки</button>
+      <span class="fb-count">7 событий за сутки</span>
+    </div>
+
+    <div class="card">
+      <span class="sev crit"></span>
+      <div class="c-body">
+        <div class="c-kicker"><b>Вклады</b> · Розница · сегодня 06:40 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Конверсия заявок упала до 3,1% — третий месяц ниже плана</div>
+        <div class="c-text">План 4,5%. Отклонение перешло в критичное из-за устойчивого тренда. Основной вклад — ставка ниже рынка и рост отказов скоринга.</div>
+      </div>
+      <span class="c-act">Разобрать →</span>
+    </div>
+
+    <div class="card">
+      <span class="sev crit"></span>
+      <div class="c-body">
+        <div class="c-kicker"><b>Финансы</b> · весь банк · сегодня 06:40 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Операционные расходы превысили бюджет на 6%</div>
+        <div class="c-text">612 млрд при бюджете 577 млрд. Перерасход сосредоточен в статьях «Персонал» и «Облачная инфраструктура».</div>
+      </div>
+      <span class="c-act">Разобрать →</span>
+    </div>
+
+    <div class="card">
+      <span class="sev std"></span>
+      <div class="c-body">
+        <div class="c-kicker"><b>Вклады</b> · сегмент 45+ · вчера 18:20 <span class="badge b-wow">Инсайт</span></div>
+        <div class="c-title">Клиенты 45+ стали открывать вклады онлайн вдвое чаще</div>
+        <div class="c-text">Доля цифровых открытий в сегменте выросла с 18% до 37% за квартал. В плане такого сдвига не было — стоит пересмотреть канальную стратегию.</div>
+      </div>
+      <span class="c-act">Посмотреть →</span>
+    </div>
+
+    <div class="card">
+      <span class="sev std"></span>
+      <div class="c-body">
+        <div class="c-kicker"><b>Клиенты</b> · Премиум · вчера 09:15 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Отток в премиальном сегменте вырос на 1,8 п.п.</div>
+        <div class="c-text">Выход за 2σ от исторической нормы. Совпадает по времени с изменением тарифов 1 июня.</div>
+      </div>
+      <span class="c-act">Разобрать →</span>
+    </div>
+
+    <div class="card">
+      <span class="sev low"></span>
+      <div class="c-body">
+        <div class="c-kicker"><b>Ипотека</b> · Розница · 15.08 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Ипотека опережает план на 8%</div>
+        <div class="c-text">184 млрд при плане 170 млрд. Драйвер — партнёрский канал застройщиков, доля выросла до 34%.</div>
+      </div>
+      <span class="c-act">Посмотреть →</span>
+    </div>
+
+    <button class="more">Показать ещё 2 события</button>
+  </div>
+
+  <!-- ══ ПРАВАЯ КОЛОНКА ══ -->
+  <div class="side">
+
+    <div class="side-block">
+      <div class="side-h">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        К предыдущим запросам
+      </div>
+
+      <div class="hist">
+        <div class="h-q">Разбор конверсии по вкладам</div>
+        <div class="h-meta">Вчера, 16:40 <span class="h-dot"></span> 4 фактора</div>
+        <div class="h-prev-chain">
+          <div class="node hot"></div><span class="arrow">→</span>
+          <div class="node warm"></div><span class="arrow">→</span>
+          <div class="node warm"></div><span class="arrow">→</span>
+          <div class="node"></div>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Разбор причины
+        </span>
+      </div>
+
+      <div class="hist">
+        <div class="h-q">Сравнение каналов продаж за Q2</div>
+        <div class="h-meta">14.08 <span class="h-dot"></span> 6 срезов</div>
+        <div class="h-prev-dash">
+          <i class="a"></i><i class="b"></i><i class="c"></i>
+          <i class="d"></i><i class="e"></i><i class="f"></i>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Дашборд под запрос
+        </span>
+      </div>
+
+      <div class="hist">
+        <div class="h-q">Динамика оттока по сегментам</div>
+        <div class="h-meta">12.08 <span class="h-dot"></span> 12 месяцев</div>
+        <div class="h-prev-dash">
+          <i class="d"></i><i class="a"></i><i class="f"></i>
+          <i class="c"></i><i class="b"></i><i class="e"></i>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Дашборд под запрос
+        </span>
+      </div>
+
+      <button class="side-all">Вся история запросов</button>
+    </div>
+
+    <div class="side-block">
+      <div class="side-h">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6l-6-4.4h7.6z"/></svg>
+        Закреплённое
+      </div>
+      <div class="pin"><i class="dot" style="background:var(--moss)"></i><span>Цели квартала</span>
+        <div class="pin-spark" style="color:var(--moss)"><i style="height:40%"></i><i style="height:55%"></i><i style="height:50%"></i><i class="hi" style="height:70%"></i></div>
+        <b>11/16</b></div>
+      <div class="pin"><i class="dot" style="background:var(--amber)"></i><span>Портфель розницы</span>
+        <div class="pin-spark" style="color:var(--amber)"><i style="height:50%"></i><i style="height:58%"></i><i style="height:66%"></i><i class="hi" style="height:78%"></i></div>
+        <b>1,84 трлн</b></div>
+      <div class="pin"><i class="dot" style="background:var(--crimson)"></i><span>Конверсия заявок</span>
+        <div class="pin-spark" style="color:var(--crimson)"><i style="height:80%"></i><i style="height:60%"></i><i style="height:45%"></i><i class="hi" style="height:35%"></i></div>
+        <b>3,1%</b></div>
+      <div class="pin"><i class="dot" style="background:var(--moss)"></i><span>NPS</span>
+        <div class="pin-spark" style="color:var(--moss)"><i style="height:45%"></i><i style="height:52%"></i><i style="height:60%"></i><i class="hi" style="height:75%"></i></div>
+        <b>68</b></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.fb-tab').forEach(t=>{
+  t.onclick=()=>{document.querySelectorAll('.fb-tab').forEach(x=>x.classList.remove('on'));t.classList.add('on')}
+});
+
+function toggleTheme(){
+  document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light')}catch(e){}
+}
+try{
+  if(localStorage.getItem('theme')==='dark') document.documentElement.classList.add('dark');
+}catch(e){}
+</script>
+</body>
+</html>
