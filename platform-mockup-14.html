@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Единое окно аналитики</title>
+<style>
+:root{
+  --forest:#12352A;
+  --forest-2:#1B4A3A;
+  --ink:#1A211E;
+  --paper:#F7F6F2;
+  --card:#FFFFFF;
+  --line:#E2E0D9;
+  --line-soft:#EDEBE4;
+  --stone:#787E79;
+  --moss:#3E7D4F;
+  --amber:#B8860B;
+  --crimson:#A8321F;
+  --slate:#4A6E8A;
+  --side-bg:#F0EEE7;
+  --pin-bg:#EFE8D8;
+  --pin-border:#DFD3AE;
+}
+html.dark{
+  --forest:#4FBF87;
+  --forest-2:#6FD4A0;
+  --ink:#EDEEEA;
+  --paper:#141815;
+  --card:#1D2320;
+  --line:#323830;
+  --line-soft:#282E29;
+  --stone:#8B9289;
+  --moss:#4FBF87;
+  --amber:#E0B84F;
+  --crimson:#E8776A;
+  --slate:#7FA8C9;
+  --side-bg:#1A211D;
+  --pin-bg:#26301F;
+  --pin-border:#3A4A2E;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);
+  font-size:14px;line-height:1.5;min-height:100vh;
+  transition:background .2s,color .2s;
+}
+
+/* ── Шапка ── */
+.top{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 26px;border-bottom:1px solid var(--line);
+  background:var(--card);position:sticky;top:0;z-index:20;
+  transition:background .2s,border-color .2s;
+}
+.brand{font-size:14px;font-weight:600;color:var(--forest);letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.top-meta{margin-left:auto;font-size:11.5px;color:var(--stone);
+  display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
+.top-meta i{width:6px;height:6px;border-radius:50%;background:var(--moss);display:block}
+
+/* Единый стиль всех кнопок-действий: Наблюдать / Спросить / Удивиться / Управлять */
+.action-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 18px;border-radius:20px;border:none;
+  background:var(--forest);color:#fff;font-family:inherit;
+  font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s;
+  white-space:nowrap;
+}
+html.dark .action-btn{color:#0C1A12}
+.action-btn:hover{background:var(--forest-2)}
+.action-btn svg{width:14px;height:14px;flex-shrink:0}
+.action-btn.small{padding:6px 14px;font-size:11.5px}
+.action-btn.small svg{width:12px;height:12px}
+
+.nav-observe{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:20px;border:none;
+  background:var(--forest);color:#fff;font-family:inherit;
+  font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s;
+}
+html.dark .nav-observe{color:#0C1A12}
+.nav-observe:hover{background:var(--forest-2)}
+.nav-observe svg{width:14px;height:14px}
+
+.back-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:18px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);font-family:inherit;
+  font-size:12.5px;cursor:pointer;transition:all .15s;
+}
+.back-btn:hover{border-color:var(--forest);color:var(--forest)}
+.back-btn svg{width:14px;height:14px}
+
+.page{display:none}
+.page.on{display:block}
+
+.theme-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.theme-btn:hover{border-color:var(--forest);color:var(--forest)}
+.theme-btn svg{width:16px;height:16px}
+.theme-btn .sun{display:none}
+html.dark .theme-btn .moon{display:none}
+html.dark .theme-btn .sun{display:block}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px 60px;
+  display:grid;grid-template-columns:1fr 264px;gap:34px;align-items:start}
+
+/* ══ ЦЕНТР: строка запроса ══ */
+.hero{padding:22px 0 20px;text-align:center}
+.hero-h{font-size:19px;font-weight:600;letter-spacing:-.01em;margin-bottom:4px}
+.hero-sub{font-size:12.5px;color:var(--stone);margin-bottom:16px}
+
+.searchbox{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:26px;padding:6px 6px 6px 20px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  transition:border-color .16s,box-shadow .16s,background .2s;
+}
+.searchbox:focus-within{border-color:var(--forest);box-shadow:0 3px 14px rgba(18,53,42,.09)}
+.searchbox svg{flex-shrink:0;color:var(--stone)}
+.searchbox input{
+  flex:1;border:none;outline:none;background:none;
+  font-family:inherit;font-size:14.5px;color:var(--ink);padding:9px 0;
+}
+.searchbox input::placeholder{color:var(--stone)}
+.go{
+  padding:10px 22px;border:none;border-radius:20px;background:var(--forest);
+  color:#fff;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:background .15s;
+}
+html.dark .go{color:#0C1A12}
+.go:hover{background:var(--forest-2)}
+
+.suggest{display:flex;gap:7px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.sg{
+  font-size:12.5px;padding:7px 15px;border-radius:20px;
+  border:1px solid var(--line);background:var(--card);color:var(--stone);
+  cursor:pointer;font-family:inherit;transition:all .15s;
+}
+.sg:hover{border-color:var(--forest);color:var(--forest)}
+
+/* ══ ЛЕНТА ══ */
+.feed-bar{
+  display:flex;align-items:center;gap:14px;
+  border-bottom:1px solid var(--line);margin-bottom:2px;
+}
+.fb-tab{
+  padding:11px 2px;font-size:13.5px;color:var(--stone);cursor:pointer;
+  border:none;background:none;font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;
+}
+.fb-tab:hover{color:var(--ink)}
+.fb-tab.on{color:var(--forest);border-bottom-color:var(--forest);font-weight:600}
+.fb-count{margin-left:auto;font-size:11.5px;color:var(--stone)}
+
+.wow-badge{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:20px;border:none;
+  background:var(--amber);color:#fff;font-size:12.5px;font-weight:600;
+  flex-shrink:0;cursor:default;
+}
+html.dark .wow-badge{color:#1A1400}
+.wow-badge svg{width:14px;height:14px}
+
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;margin-top:9px;cursor:pointer;
+  display:grid;grid-template-columns:1fr auto;gap:15px;align-items:start;
+  transition:border-color .15s,box-shadow .15s,background .2s;
+}
+.card:hover{border-color:var(--forest);box-shadow:0 2px 10px rgba(18,53,42,.06)}
+
+.c-body{min-width:0}
+.c-kicker{
+  display:flex;align-items:center;gap:8px;margin-bottom:5px;
+  font-size:11px;color:var(--stone);flex-wrap:wrap;
+}
+.c-kicker b{color:var(--ink);font-weight:600}
+.badge{
+  font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;
+  letter-spacing:.03em;text-transform:uppercase;
+}
+.b-watch{background:var(--line-soft);color:var(--stone)}
+.b-wow{background:var(--line-soft);color:var(--stone)}
+html.dark .b-watch{background:var(--line-soft)}
+html.dark .b-wow{background:var(--line-soft)}
+.c-title{font-size:15px;font-weight:600;line-height:1.35;margin-bottom:5px}
+.c-text{font-size:13px;color:var(--stone);line-height:1.5}
+.c-act{
+  font-size:12px;color:var(--forest);font-weight:600;white-space:nowrap;
+  align-self:center;opacity:0;transition:opacity .15s;
+}
+.card:hover .c-act{opacity:1}
+
+.c-actions{display:flex;flex-direction:column;gap:6px;align-self:center}
+.btn-manage{
+  font-size:11.5px;padding:6px 13px;border-radius:16px;border:none;
+  background:var(--forest);color:#fff;font-family:inherit;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:background .15s;
+}
+html.dark .btn-manage{color:#0C1A12}
+.btn-manage:hover{background:var(--forest-2)}
+.btn-view{
+  font-size:11px;color:var(--stone);text-align:center;cursor:pointer;
+  background:none;border:none;font-family:inherit;
+}
+.btn-view:hover{color:var(--forest)}
+.more{
+  width:100%;padding:12px;margin-top:12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--card);color:var(--stone);
+  font-family:inherit;font-size:13px;cursor:pointer;transition:all .15s;
+}
+.more:hover{border-color:var(--forest);color:var(--forest)}
+
+/* ══ ПРАВАЯ КОЛОНКА ══ */
+.side{position:sticky;top:76px}
+
+.side-block{
+  background:var(--side-bg);border:1px solid var(--line);
+  border-radius:14px;padding:16px 15px;margin-bottom:16px;
+  transition:background .2s,border-color .2s;
+}
+.side-h{
+  font-size:12px;font-weight:700;color:var(--forest);
+  letter-spacing:.02em;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px;
+}
+.side-h svg{width:15px;height:15px;flex-shrink:0}
+
+.hist{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+}
+.hist:last-of-type{margin-bottom:0}
+.hist:hover{border-color:var(--forest);box-shadow:0 2px 8px rgba(18,53,42,.05)}
+.h-q{font-size:13px;font-weight:600;line-height:1.35;margin-bottom:5px}
+.h-meta{font-size:11px;color:var(--stone);display:flex;align-items:center;gap:6px}
+.h-dot{width:3px;height:3px;border-radius:50%;background:var(--line);display:block}
+.h-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;padding:2px 7px;border-radius:4px;
+  background:var(--line-soft);color:var(--stone);margin-top:8px;
+}
+
+/* превью дашборда — сетка тайлов */
+.h-prev-dash{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:3px;
+  margin-top:10px;height:44px;
+}
+.h-prev-dash i{
+  background:var(--line-soft);border-radius:3px;display:block;position:relative;
+  overflow:hidden;
+}
+.h-prev-dash i::after{
+  content:'';position:absolute;left:4px;right:4px;bottom:4px;height:2px;
+  background:var(--forest);border-radius:1px;opacity:.4;
+}
+.h-prev-dash i.a::after{width:60%}
+.h-prev-dash i.b::after{width:80%}
+.h-prev-dash i.c::after{width:40%}
+.h-prev-dash i.d::after{width:70%}
+.h-prev-dash i.e::after{width:50%}
+.h-prev-dash i.f::after{width:90%}
+
+/* превью разбора причины — цепочка узлов */
+.h-prev-chain{
+  display:flex;align-items:center;gap:3px;margin-top:10px;height:30px;
+}
+.h-prev-chain .node{
+  flex:1;height:20px;border-radius:4px;background:var(--line-soft);
+  position:relative;
+}
+.h-prev-chain .node.hot{background:#F1DAD5}
+.h-prev-chain .node.warm{background:#F3EDDA}
+html.dark .h-prev-chain .node.hot{background:#3A2420}
+html.dark .h-prev-chain .node.warm{background:#332C18}
+.h-prev-chain .arrow{color:var(--line);font-size:10px;flex-shrink:0}
+
+.side-all{
+  display:block;width:100%;padding:9px;border:1px dashed var(--line);
+  border-radius:10px;background:none;color:var(--stone);
+  font-family:inherit;font-size:12px;cursor:pointer;margin-top:10px;
+}
+.side-all:hover{border-color:var(--forest);color:var(--forest)}
+
+.pin{
+  display:flex;align-items:center;gap:9px;padding:9px 11px;
+  background:var(--pin-bg);border:1px solid var(--pin-border);border-radius:8px;
+  margin-bottom:6px;cursor:pointer;font-size:12.5px;transition:all .15s;
+}
+.pin:last-child{margin-bottom:0}
+.pin:hover{border-color:var(--amber)}
+.pin i.dot{width:7px;height:7px;border-radius:2px;display:block;flex-shrink:0}
+.pin span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pin b{font-size:11px;color:var(--stone);font-weight:400;font-variant-numeric:tabular-nums}
+.pin-spark{display:flex;align-items:flex-end;gap:1.5px;height:16px;flex-shrink:0}
+.pin-spark i{width:3px;background:var(--line-soft);border-radius:1px;display:block}
+.pin-spark i.hi{background:currentColor}
+
+@media(max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .side{position:static;order:2}
+}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <span class="brand">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/>
+    </svg>
+    Аналитика
+  </span>
+  <button class="back-btn" id="backBtn" style="display:none" onclick="goHome()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Назад
+  </button>
+  <button class="action-btn" onclick="showObservePage('profit')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    Наблюдать
+  </button>
+  <span class="top-meta"><i></i>Данные на 16.08.2026, 06:40</span>
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Переключить тему">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</div>
+
+<!-- ══════════ СТРАНИЦА: ГЛАВНАЯ ══════════ -->
+<div class="page on" id="page-home">
+
+<div class="wrap">
+
+  <!-- ══ ЦЕНТРАЛЬНАЯ КОЛОНКА ══ -->
+  <div>
+    <div class="hero">
+      <div class="hero-h">Что хотите узнать?</div>
+      <div class="hero-sub">Спросите про метрику, продукт или сегмент — отчёт соберётся под вопрос</div>
+
+      <div class="searchbox">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="heroInput" value="Что у нас с вкладами?"/>
+        <button class="action-btn" onclick="openChat()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Спросить
+        </button>
+      </div>
+
+      <div class="suggest">
+        <button class="sg" onclick="setQuery('Мои цели на квартал');openChat()">Мои цели на квартал</button>
+        <button class="sg" onclick="setQuery('Что у нас с вкладами?');openChat()">Что у нас с вкладами</button>
+        <button class="sg" onclick="setQuery('Почему упала маржа');openChat()">Почему упала маржа</button>
+      </div>
+    </div>
+
+    <!-- Лента -->
+    <div class="feed-bar">
+      <span class="action-btn" style="cursor:default">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l1.6 5.2L19 9l-5.4 1.8L12 16l-1.6-5.2L5 9l5.4-1.8z"/><path d="M19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7z"/></svg>
+        Удивиться
+      </span>
+      <button class="fb-tab on" data-filter="all">Всё</button>
+      <button class="fb-tab" data-filter="watch">Отклонения</button>
+      <button class="fb-tab" data-filter="wow">Инсайты</button>
+      <span class="fb-count" id="fbCount">7 событий за сутки</span>
+    </div>
+
+    <div class="card" data-type="watch">
+      <div class="c-body">
+        <div class="c-kicker"><b>Вклады</b> · Розница · сегодня 06:40 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Средний баланс на вклад упал до 3,1% доходности — третий месяц ниже плана</div>
+        <div class="c-text">План 4,5%. Отклонение перешло в критичное из-за устойчивого тренда. Основной вклад — ставка ниже рынка и рост отказов скоринга.</div>
+      </div>
+      <div class="c-actions"><button class="action-btn small" onclick="event.stopPropagation();showManagePage('vklady')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>Управлять</button></div>
+    </div>
+
+    <div class="card" data-type="watch">
+      <div class="c-body">
+        <div class="c-kicker"><b>Финансы</b> · весь банк · сегодня 06:40 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Операционные расходы превысили бюджет на 6%</div>
+        <div class="c-text">612 млрд при бюджете 577 млрд. Перерасход сосредоточен в статьях «Персонал» и «Облачная инфраструктура».</div>
+      </div>
+      <div class="c-actions"><button class="action-btn small" onclick="event.stopPropagation();showManagePage('opex')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>Управлять</button></div>
+    </div>
+
+    <div class="card" data-type="wow" onclick="openChatWithQuery('Клиенты 45+ и цифровые вклады')" style="cursor:pointer">
+      <div class="c-body">
+        <div class="c-kicker"><b>Вклады</b> · сегмент 45+ · вчера 18:20 <span class="badge b-wow">Инсайт</span></div>
+        <div class="c-title">Клиенты 45+ стали открывать вклады онлайн вдвое чаще</div>
+        <div class="c-text">Доля цифровых открытий в сегменте выросла с 18% до 37% за квартал. В плане такого сдвига не было — стоит пересмотреть канальную стратегию.</div>
+      </div>
+      <span class="c-act">Посмотреть →</span>
+    </div>
+
+    <div class="card" data-type="watch" onclick="openChatWithQuery('Что с оттоком в премиум сегменте?')" style="cursor:pointer">
+      <div class="c-body">
+        <div class="c-kicker"><b>Клиенты</b> · Премиум · вчера 09:15 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Отток в премиальном сегменте вырос на 1,8 п.п.</div>
+        <div class="c-text">Выход за 2σ от исторической нормы. Совпадает по времени с изменением тарифов 1 июня.</div>
+      </div>
+      <div class="c-actions"><button class="action-btn small" onclick="event.stopPropagation();showManagePage('premium')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>Управлять</button></div>
+    </div>
+
+    <div class="card" data-type="watch" onclick="openChatWithQuery('Как дела с ипотекой?')" style="cursor:pointer">
+      <div class="c-body">
+        <div class="c-kicker"><b>Ипотека</b> · Розница · 15.08 <span class="badge b-watch">Отклонение</span></div>
+        <div class="c-title">Ипотека опережает план на 8%</div>
+        <div class="c-text">184 млрд при плане 170 млрд. Драйвер — партнёрский канал застройщиков, доля выросла до 34%.</div>
+      </div>
+      <span class="c-act">Посмотреть →</span>
+    </div>
+
+    <button class="more">Показать ещё 2 события</button>
+  </div>
+
+  <!-- ══ ПРАВАЯ КОЛОНКА ══ -->
+  <div class="side">
+
+    <div class="side-block">
+      <div class="side-h">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        К предыдущим запросам
+      </div>
+
+      <div class="hist" onclick="showManagePage('vklady')" style="cursor:pointer">
+        <div class="h-q">Разбор конверсии по вкладам</div>
+        <div class="h-meta">Вчера, 16:40 <span class="h-dot"></span> 4 фактора</div>
+        <div class="h-prev-chain">
+          <div class="node hot"></div><span class="arrow">→</span>
+          <div class="node warm"></div><span class="arrow">→</span>
+          <div class="node warm"></div><span class="arrow">→</span>
+          <div class="node"></div>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Разбор причины
+        </span>
+      </div>
+
+      <div class="hist" onclick="openChatWithQuery('Сравни каналы продаж за Q2')" style="cursor:pointer">
+        <div class="h-q">Сравнение каналов продаж за Q2</div>
+        <div class="h-meta">14.08 <span class="h-dot"></span> 6 срезов</div>
+        <div class="h-prev-dash">
+          <i class="a"></i><i class="b"></i><i class="c"></i>
+          <i class="d"></i><i class="e"></i><i class="f"></i>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Дашборд под запрос
+        </span>
+      </div>
+
+      <div class="hist" onclick="openChatWithQuery('Отток по сегментам')" style="cursor:pointer">
+        <div class="h-q">Динамика оттока по сегментам</div>
+        <div class="h-meta">12.08 <span class="h-dot"></span> 12 месяцев</div>
+        <div class="h-prev-dash">
+          <i class="d"></i><i class="a"></i><i class="f"></i>
+          <i class="c"></i><i class="b"></i><i class="e"></i>
+        </div>
+        <span class="h-tag">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Дашборд под запрос
+        </span>
+      </div>
+
+      <button class="side-all">Вся история запросов</button>
+    </div>
+
+    <div class="side-block">
+      <div class="side-h">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6l-6-4.4h7.6z"/></svg>
+        Закреплённое
+      </div>
+      <div class="pin" onclick="openChatWithQuery('Мои цели на квартал')" style="cursor:pointer"><i class="dot" style="background:var(--moss)"></i><span>Цели квартала</span>
+        <div class="pin-spark" style="color:var(--moss)"><i style="height:40%"></i><i style="height:55%"></i><i style="height:50%"></i><i class="hi" style="height:70%"></i></div>
+        <b>11/16</b></div>
+      <div class="pin" onclick="openChatWithQuery('Что у нас с вкладами?')" style="cursor:pointer"><i class="dot" style="background:var(--amber)"></i><span>Портфель розницы</span>
+        <div class="pin-spark" style="color:var(--amber)"><i style="height:50%"></i><i style="height:58%"></i><i style="height:66%"></i><i class="hi" style="height:78%"></i></div>
+        <b>1,84 трлн</b></div>
+      <div class="pin" onclick="showObservePage('profit')" style="cursor:pointer"><i class="dot" style="background:var(--crimson)"></i><span>Чистая прибыль</span>
+        <div class="pin-spark" style="color:var(--crimson)"><i style="height:80%"></i><i style="height:60%"></i><i style="height:45%"></i><i class="hi" style="height:35%"></i></div>
+        <b>28,4 млрд</b></div>
+      <div class="pin" onclick="openChatWithQuery('Что у нас с вкладами?')" style="cursor:pointer"><i class="dot" style="background:var(--moss)"></i><span>NPS</span>
+        <div class="pin-spark" style="color:var(--moss)"><i style="height:45%"></i><i style="height:52%"></i><i style="height:60%"></i><i class="hi" style="height:75%"></i></div>
+        <b>68</b></div>
+    </div>
+
+  </div>
+
+</div>
+</div><!-- /page-home -->
+
+<style>
+/* ══════════ СТРАНИЦА НАБЛЮДАТЬ ══════════ */
+.obs-wrap{max-width:1180px;margin:0 auto;padding:22px 26px 60px}
+.obs-head{margin-bottom:20px}
+.obs-h{font-size:20px;font-weight:600;margin-bottom:4px}
+.obs-sub{font-size:12.5px;color:var(--stone)}
+
+.obs-search{
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:12px;padding:8px 8px 8px 16px;margin:16px 0 10px;
+  box-shadow:0 1px 3px rgba(0,0,0,.03);
+}
+.obs-search svg{flex-shrink:0;color:var(--stone)}
+.obs-search input{
+  flex:1;border:none;outline:none;background:none;
+  font-family:inherit;font-size:13.5px;color:var(--ink);
+}
+.obs-search-btn{
+  width:34px;height:34px;border-radius:8px;border:none;background:var(--forest);
+  color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+html.dark .obs-search-btn{color:#0C1A12}
+.obs-search-btn:hover{background:var(--forest-2)}
+.obs-report-link{margin-bottom:16px}
+
+.obs-grid{display:grid;grid-template-columns:260px 1fr;gap:22px}
+
+/* дерево метрик слева */
+.tree-box{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:16px;position:sticky;top:76px;
+}
+.tree-h{font-size:11.5px;font-weight:700;color:var(--stone);text-transform:uppercase;
+  letter-spacing:.05em;margin-bottom:12px}
+.tree{font-size:12.5px}
+.tree-node{padding:6px 8px;border-radius:6px;cursor:pointer;display:flex;
+  align-items:center;gap:6px;transition:background .12s}
+.tree-node:hover{background:var(--line-soft)}
+.tree-node.active{background:var(--pin-bg);color:var(--forest);font-weight:600}
+.tree-node.l0{font-weight:600;color:var(--ink)}
+.tree-node.l1{padding-left:20px;color:var(--stone)}
+.tree-node.l2{padding-left:34px;color:var(--stone);font-size:12px}
+.tree-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* преднастроенные графики справа */
+.pre-charts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.chart-card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:16px 18px;
+}
+.chart-card.wide{grid-column:span 2}
+.cc-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+.cc-title{font-size:12.5px;font-weight:600}
+.cc-val{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.cc-delta{font-size:11px;font-weight:600;margin-left:6px}
+
+.bars{display:flex;align-items:flex-end;gap:5px;height:70px}
+.bars i{flex:1;background:var(--line-soft);border-radius:3px 3px 0 0;display:block;position:relative}
+.bars i.hi{background:var(--forest)}
+.bars i.bad{background:var(--crimson)}
+
+.donut-row{display:flex;align-items:center;gap:16px}
+.donut{width:76px;height:76px;border-radius:50%;flex-shrink:0;position:relative;
+  background:conic-gradient(var(--forest) 0% var(--pct), var(--line-soft) var(--pct) 100%)}
+.donut::after{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--card)}
+.donut-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;z-index:1}
+.donut-legend{font-size:12px;color:var(--stone);line-height:1.9}
+.donut-legend b{color:var(--ink);float:right;font-variant-numeric:tabular-nums;margin-left:12px}
+
+.line-chart{height:80px;position:relative;margin-top:4px}
+.line-chart svg{width:100%;height:100%}
+
+.gen-demo{
+  margin-top:22px;background:var(--pin-bg);border:1px dashed var(--pin-border);
+  border-radius:12px;padding:16px 18px;
+}
+.gen-demo-h{font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px;
+  display:flex;align-items:center;gap:7px}
+.gen-demo-text{font-size:12px;color:var(--stone);line-height:1.5}
+
+/* ══════════ СТРАНИЦА УПРАВЛЯТЬ ══════════ */
+.mng-wrap{max-width:900px;margin:0 auto;padding:22px 26px 60px}
+.mng-title{font-size:20px;font-weight:600;margin-bottom:3px}
+.mng-sub{font-size:12.5px;color:var(--stone);margin-bottom:24px}
+
+.mng-sect{font-size:11.5px;font-weight:700;color:var(--stone);text-transform:uppercase;
+  letter-spacing:.05em;margin:24px 0 12px}
+.mng-sect:first-of-type{margin-top:0}
+
+.mng-chain{display:flex;align-items:stretch;gap:0}
+.mng-link{flex:1;background:var(--card);border:1px solid var(--line);padding:14px 16px}
+.mng-link:first-child{border-radius:10px 0 0 10px}
+.mng-link:last-child{border-radius:0 10px 10px 0}
+.mng-link+.mng-link{border-left:none}
+.ml-step{font-size:10px;color:var(--stone);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.ml-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.ml-val{font-size:12px;font-variant-numeric:tabular-nums}
+
+.mng-factor{
+  display:grid;grid-template-columns:180px 1fr 66px;gap:12px;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:12.5px;
+}
+.mng-factor:last-child{border-bottom:none}
+.mf-bar{height:7px;background:var(--line-soft);border-radius:4px;overflow:hidden}
+.mf-bar span{display:block;height:100%;border-radius:4px}
+.mf-num{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+
+.scenario-card{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;margin-bottom:9px;
+}
+.sc-top{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.sc-name{font-size:13px;font-weight:600;flex:1}
+.sc-effect{font-size:11.5px;color:var(--stone)}
+.sc-bottom{display:flex;gap:8px;align-items:center;padding-top:9px;border-top:1px solid var(--line-soft)}
+.task-sent{
+  display:none;align-items:center;gap:7px;font-size:12px;color:var(--forest);
+  font-weight:600;padding-top:9px;border-top:1px solid var(--line-soft);
+}
+.task-sent.show{display:flex}
+.sc-assignee{
+  flex:1;font-size:12px;padding:7px 12px;border-radius:7px;border:1px solid var(--line);
+  background:var(--paper);color:var(--stone);font-family:inherit;
+}
+.sc-assign-btn{
+  font-size:12px;padding:7px 15px;border-radius:7px;border:none;
+  background:var(--forest);color:#fff;font-family:inherit;font-weight:600;cursor:pointer;
+}
+html.dark .sc-assign-btn{color:#0C1A12}
+.sc-assign-btn:hover{background:var(--forest-2)}
+
+/* ══════════ ЧАТ-РЕЖИМ (диалог) ══════════ */
+.chat-screen{display:none;height:100vh;flex-direction:column}
+.chat-screen.on{display:flex}
+.chat-top{
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+  padding:12px 26px;border-bottom:1px solid var(--line);
+}
+.chat-back{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.chat-back:hover{border-color:var(--forest);color:var(--forest)}
+.chat-title{font-size:13.5px;font-weight:600;flex:1}
+.chat-icons{display:flex;gap:6px;flex-shrink:0}
+.chat-icon-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);cursor:pointer;position:relative;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.chat-icon-btn:hover{border-color:var(--forest);color:var(--forest)}
+.chat-icon-btn.active{border-color:var(--amber);color:var(--amber);background:var(--pin-bg)}
+.chat-toast{
+  position:absolute;top:38px;right:0;background:var(--ink);color:var(--paper);
+  font-size:11px;padding:5px 10px;border-radius:6px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .15s;
+}
+html.dark .chat-toast{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.chat-toast.show{opacity:1}
+
+.chat-mid{flex:1;overflow-y:auto}
+.chat-layout{
+  max-width:1060px;margin:0 auto;padding:22px 26px 26px;
+  display:grid;grid-template-columns:220px 1fr;gap:26px;align-items:start;
+}
+.chat-side-h{
+  font-size:11px;font-weight:700;color:var(--stone);text-transform:uppercase;
+  letter-spacing:.05em;margin-bottom:12px;position:sticky;top:0;
+}
+.chat-suggest{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:all .15s;
+  font-size:12px;line-height:1.4;
+}
+.chat-suggest:hover{border-color:var(--forest);color:var(--forest)}
+
+.chat-hist-item{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all .15s;
+  font-size:12px;line-height:1.4;color:var(--stone);
+}
+.chat-hist-item:hover{border-color:var(--forest);color:var(--forest)}
+.chat-hist-item.current{border-color:var(--forest);color:var(--forest);font-weight:600;background:var(--pin-bg)}
+
+.chat-suggest-row{
+  display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;margin-bottom:10px;
+  max-width:1060px;margin-left:auto;margin-right:auto;
+}
+.chat-suggest-row .chip-sg{
+  flex-shrink:0;font-size:12px;padding:7px 14px;border-radius:16px;
+  border:1px solid var(--line);background:var(--paper);color:var(--stone);
+  cursor:pointer;white-space:nowrap;transition:all .15s;
+}
+.chat-suggest-row .chip-sg:hover{border-color:var(--forest);color:var(--forest);background:var(--card)}
+
+.turn-actions{display:flex;gap:6px}
+.turn-icon-btn{
+  width:28px;height:28px;border-radius:7px;border:1px solid var(--line);
+  background:var(--card);color:var(--stone);cursor:pointer;position:relative;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;
+}
+.turn-icon-btn:hover{border-color:var(--forest);color:var(--forest)}
+.turn-icon-btn.active{border-color:var(--amber);color:var(--amber);background:var(--pin-bg)}
+.turn-icon-btn svg{width:13px;height:13px}
+.turn-header{display:flex;align-items:center;gap:10px}
+.turn-header .chat-gen{flex:1}
+
+.chat-thread{min-width:0;display:flex;flex-direction:column;gap:22px}
+.chat-turn{display:flex;flex-direction:column;gap:12px}
+.chat-user-msg{
+  align-self:flex-end;max-width:70%;
+  background:var(--forest);color:#fff;border-radius:14px 14px 3px 14px;
+  padding:9px 15px;font-size:13px;
+}
+html.dark .chat-user-msg{color:#0C1A12}
+
+.chat-gen{
+  font-size:11px;color:var(--stone);display:flex;align-items:center;gap:7px;
+}
+.chat-gen i{width:6px;height:6px;border-radius:50%;background:var(--moss);display:block;flex-shrink:0}
+
+.chat-charts{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.chat-charts .chart-card{margin:0}
+
+.chat-text{
+  font-size:13px;color:var(--ink);line-height:1.7;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:15px 17px;
+}
+.chat-text b{font-weight:600}
+
+.chat-navigator a,
+a.nav-link{
+  color:var(--slate);font-weight:600;text-decoration:none;font-size:12.5px;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.chat-navigator a:hover,
+a.nav-link:hover{text-decoration:underline}
+.chat-navigator a svg,
+a.nav-link svg{width:13px;height:13px}
+
+.chat-footer{
+  flex-shrink:0;border-top:1px solid var(--line);background:var(--card);
+  padding:12px 26px 16px;
+}
+.chat-input-row{
+  max-width:1060px;margin:0 auto;
+  display:flex;align-items:center;gap:10px;
+  background:var(--paper);border:1.5px solid var(--line);border-radius:22px;
+  padding:6px 6px 6px 18px;transition:border-color .15s;
+}
+.chat-input-row:focus-within{border-color:var(--forest)}
+.chat-input-row input{
+  flex:1;border:none;outline:none;background:none;
+  font-family:inherit;font-size:13.5px;color:var(--ink);padding:9px 0;
+}
+.chat-input-row input::placeholder{color:var(--stone)}
+.chat-send{
+  padding:9px 20px;border:none;border-radius:18px;background:var(--forest);
+  color:#fff;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;
+  flex-shrink:0;transition:background .15s;
+}
+html.dark .chat-send{color:#0C1A12}
+.chat-send:hover{background:var(--forest-2)}
+
+@media(max-width:800px){
+  .chat-layout{grid-template-columns:1fr}
+  .chat-charts{grid-template-columns:1fr}
+}
+</style>
+
+<!-- ══════════ ЧАТ-РЕЖИМ ══════════ -->
+<div class="chat-screen" id="chatScreen">
+  <div class="chat-top">
+    <button class="chat-back" onclick="closeChat()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <span class="chat-title">Диалог</span>
+    <div class="chat-icons">
+      <button class="chat-icon-btn" onclick="toastAction(this,'shareToast')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        <span class="chat-toast" id="shareToast">Ссылка скопирована</span>
+      </button>
+      <button class="chat-icon-btn" onclick="toastAction(this,'saveToast')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6l-6-4.4h7.6z"/></svg>
+        <span class="chat-toast" id="saveToast">Сохранено в избранное</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-mid">
+    <div class="chat-layout">
+      <div>
+        <div class="chat-side-h">История вопросов</div>
+        <div id="chatHistory"></div>
+      </div>
+
+      <div class="chat-thread" id="chatThread"></div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <div class="chat-suggest-row" id="chatSuggestions"></div>
+    <div class="chat-input-row">
+      <input id="chatContinueInput" placeholder="Продолжите диалог — например «а как в апреле?»"/>
+      <button class="chat-send" onclick="sendContinue()">Отправить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ СТРАНИЦА: НАБЛЮДАТЬ ══════════ -->
+<div class="page" id="page-observe">
+  <div class="obs-wrap">
+    <div class="obs-head">
+      <div class="obs-h">Наблюдать</div>
+      <div class="obs-sub">Дерево метрик и преднастроенные графики — постоянный обзор без запроса</div>
+    </div>
+
+    <div class="obs-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input id="obsSearchInput" value="Что у нас с вкладами?"/>
+      <button class="obs-search-btn" onclick="switchObserve('vklady')" aria-label="Построить">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+
+    <div class="obs-grid">
+      <!-- Дерево метрик -->
+      <div class="tree-box">
+        <div class="tree-h">Дерево метрик</div>
+        <div class="tree">
+          <div class="tree-node l0 active" id="treeProfit" onclick="switchObserve('profit')"><span class="tree-dot" style="background:var(--forest)"></span>Чистая прибыль</div>
+          <div class="tree-node l1"><span class="tree-dot" style="background:var(--moss)"></span>Процентный доход</div>
+          <div class="tree-node l1"><span class="tree-dot" style="background:var(--amber)"></span>Комиссионный доход</div>
+          <div class="tree-node l2" id="treeVklady" onclick="switchObserve('vklady')">— Вклады</div>
+          <div class="tree-node l2">— Ипотека</div>
+          <div class="tree-node l2">— Карты</div>
+          <div class="tree-node l1"><span class="tree-dot" style="background:var(--crimson)"></span>Операционные расходы</div>
+          <div class="tree-node l1"><span class="tree-dot" style="background:var(--slate)"></span>Резервы</div>
+          <div class="tree-node l0" style="margin-top:8px"><span class="tree-dot" style="background:var(--forest)"></span>Портфель</div>
+          <div class="tree-node l1">Розница</div>
+          <div class="tree-node l1">Корпоративный</div>
+          <div class="tree-node l0" style="margin-top:8px"><span class="tree-dot" style="background:var(--forest)"></span>Клиентская база</div>
+          <div class="tree-node l1">Активные клиенты</div>
+          <div class="tree-node l1">Отток</div>
+        </div>
+      </div>
+
+      <!-- Преднастроенные графики -->
+      <div>
+        <div class="obs-report-link">
+          <a href="#" class="nav-link" onclick="return false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+            <span id="obsReportLabel">Открыть отчёт «Чистая прибыль» в Навигаторе · REP-4401</span>
+          </a>
+        </div>
+
+        <!-- Набор: Чистая прибыль (по умолчанию) -->
+        <div class="pre-charts" id="obsCharts-profit">
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Чистая прибыль, млрд ₽</span></div>
+            <div class="cc-val" style="color:var(--crimson)">28,4<span class="cc-delta" style="color:var(--crimson)">−8,2%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:82%"></i><i style="height:78%"></i><i style="height:72%"></i>
+              <i style="height:64%"></i><i style="height:56%"></i><i class="bad" style="height:48%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Процентный доход</span></div>
+            <div class="cc-val">61,2 млрд<span class="cc-delta" style="color:var(--moss)">+3,4%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:50%"></i><i style="height:56%"></i><i style="height:60%"></i>
+              <i style="height:66%"></i><i style="height:72%"></i><i class="hi" style="height:80%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Операционные расходы</span></div>
+            <div class="cc-val" style="color:var(--crimson)">612 млрд<span class="cc-delta" style="color:var(--crimson)">+6%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:52%"></i><i style="height:55%"></i><i style="height:60%"></i>
+              <i style="height:66%"></i><i style="height:74%"></i><i class="bad" style="height:92%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Резервы</span></div>
+            <div class="cc-val">18,6 млрд<span class="cc-delta" style="color:var(--crimson)">+2,1%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:48%"></i><i style="height:50%"></i><i style="height:55%"></i>
+              <i style="height:60%"></i><i style="height:66%"></i><i class="bad" style="height:72%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card wide">
+            <div class="cc-head"><span class="cc-title">Вклад блоков в прибыль</span></div>
+            <div class="donut-row">
+              <div class="donut" style="--pct:100%"><span class="donut-label">28,4</span></div>
+              <div class="donut-legend" style="flex:1">
+                Розница <b>52%</b><br>
+                Корпоративный <b>31%</b><br>
+                Digital <b>11%</b><br>
+                Операции <b>6%</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Стоимость фондирования</span></div>
+            <div class="cc-val">6,1%<span class="cc-delta" style="color:var(--crimson)">+0,4 п.п.</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:48%"></i><i style="height:52%"></i><i style="height:57%"></i>
+              <i style="height:62%"></i><i style="height:68%"></i><i class="bad" style="height:74%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">ROE</span></div>
+            <div class="cc-val">14,2%<span class="cc-delta" style="color:var(--crimson)">−1,8 п.п.</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:78%"></i><i style="height:74%"></i><i style="height:68%"></i>
+              <i style="height:62%"></i><i style="height:56%"></i><i class="bad" style="height:50%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Комиссионный доход</span></div>
+            <div class="cc-val">22,8 млрд<span class="cc-delta" style="color:var(--moss)">+1,6%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:54%"></i><i style="height:58%"></i><i style="height:62%"></i>
+              <i style="height:66%"></i><i style="height:70%"></i><i class="hi" style="height:76%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card wide">
+            <div class="cc-head"><span class="cc-title">Позиция на рынке</span></div>
+            <div class="donut-legend" style="line-height:2.1">
+              Место по чистой прибыли среди банков <b>6 из 20</b><br>
+              ROE против медианы рынка <b>−0,9 п.п.</b><br>
+              Динамика прибыли к прошлому году <b>−4,3%</b>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Набор: Вклады -->
+        <div class="pre-charts" id="obsCharts-vklady" style="display:none">
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Портфель вкладов, млрд ₽</span></div>
+            <div class="cc-val">842<span class="cc-delta" style="color:var(--moss)">+2,1%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:52%"></i><i style="height:58%"></i><i style="height:55%"></i>
+              <i style="height:64%"></i><i style="height:71%"></i><i class="hi" style="height:80%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Доходность вклада</span></div>
+            <div class="cc-val" style="color:var(--crimson)">3,1%<span class="cc-delta" style="color:var(--crimson)">−1,4 п.п.</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:84%"></i><i style="height:78%"></i><i style="height:70%"></i>
+              <i style="height:60%"></i><i style="height:50%"></i><i class="bad" style="height:40%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Стоимость фондирования</span></div>
+            <div class="cc-val">6,1%<span class="cc-delta" style="color:var(--crimson)">+0,4 п.п.</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:48%"></i><i style="height:52%"></i><i style="height:57%"></i>
+              <i style="height:62%"></i><i style="height:68%"></i><i class="bad" style="height:74%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Открыто вкладов, тыс.</span></div>
+            <div class="cc-val">5,7<span class="cc-delta" style="color:var(--crimson)">−12%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:80%"></i><i style="height:74%"></i><i style="height:68%"></i>
+              <i style="height:58%"></i><i style="height:50%"></i><i class="bad" style="height:44%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card wide">
+            <div class="cc-head"><span class="cc-title">Доля вкладов по каналу открытия</span></div>
+            <div class="donut-row">
+              <div class="donut" style="--pct:37%"><span class="donut-label">37%</span></div>
+              <div class="donut-legend" style="flex:1">
+                Онлайн <b>37%</b><br>
+                Отделение <b>48%</b><br>
+                Партнёрский канал <b>11%</b><br>
+                Колл-центр <b>4%</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">NPS по продукту</span></div>
+            <div class="cc-val">71<span class="cc-delta" style="color:var(--moss)">+4</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:50%"></i><i style="height:54%"></i><i style="height:60%"></i>
+              <i style="height:66%"></i><i style="height:74%"></i><i class="hi" style="height:84%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Отток вкладчиков</span></div>
+            <div class="cc-val">2,1%<span class="cc-delta" style="color:var(--moss)">−0,3 п.п.</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:70%"></i><i style="height:64%"></i><i style="height:60%"></i>
+              <i style="height:56%"></i><i style="height:50%"></i><i class="hi" style="height:44%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="cc-head"><span class="cc-title">Жалобы по продукту</span></div>
+            <div class="cc-val">142<span class="cc-delta" style="color:var(--crimson)">+18%</span></div>
+            <div class="bars" style="margin-top:12px">
+              <i style="height:44%"></i><i style="height:48%"></i><i style="height:54%"></i>
+              <i style="height:62%"></i><i style="height:74%"></i><i class="bad" style="height:88%"></i>
+            </div>
+          </div>
+
+          <div class="chart-card wide">
+            <div class="cc-head"><span class="cc-title">Позиция на рынке</span></div>
+            <div class="donut-legend" style="line-height:2.1">
+              Доля рынка вкладов <b>8,4%</b><br>
+              Место в рэнкинге банков <b>5 из 20</b><br>
+              Ставка против медианы рынка <b>−0,5 п.п.</b>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="gen-demo">
+          <div class="gen-demo-h">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Пример работы поиска (демо)
+          </div>
+          <div class="gen-demo-text">Запрос «что у нас с вкладами» → система находит показатель в дереве метрик, строит график на основе шаблона визуализации и возвращает прямую ссылку на дашборд — без создания нового отчёта.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ СТРАНИЦА: УПРАВЛЯТЬ ══════════ -->
+<div class="page" id="page-manage">
+  <div class="mng-wrap">
+    <div class="mng-title" id="mngTitle">Конверсия обращений по вкладам: 3,1% при плане 4,5%</div>
+    <div class="mng-sub" id="mngSub">Критичное отклонение · третий месяц подряд · обнаружено 16.08 в 06:40</div>
+
+    <div class="mng-sect">Цепочка влияния</div>
+    <div class="mng-chain" id="mngChain"></div>
+
+    <div class="mng-sect">Факторы и вклад каждого</div>
+    <div id="mngFactors"></div>
+
+    <div class="mng-sect">Сценарии — выберите и назначьте задачу</div>
+    <div id="mngScenarios"></div>
+  </div>
+</div>
+
+<script>
+/* ══ Наборы ответов чата ══ */
+const CHAT_DATA = {
+  'Что у нас с вкладами?': {
+    charts: [
+      {label:'Портфель вкладов', val:'842 млрд', delta:'+2,1%', deltaColor:'var(--moss)', bars:[52,58,55,64,71,80], hiClass:'hi'},
+      {label:'Доходность вклада', val:'3,1%', valColor:'var(--crimson)', delta:'−1,4 п.п.', deltaColor:'var(--crimson)', bars:[84,78,70,60,50,40], hiClass:'bad'},
+      {label:'NPS по продукту', val:'71', delta:'+4', deltaColor:'var(--moss)', bars:[50,54,60,66,74,84], hiClass:'hi'},
+      {label:'Отток вкладчиков', val:'2,1%', delta:'−0,3 п.п.', deltaColor:'var(--moss)', bars:[70,64,60,56,50,44], hiClass:'hi'},
+    ],
+    text: 'Портфель вкладов растёт умеренно (<b>+2,1%</b> к маю), но <b>доходность продукта ниже плана</b> — ставка отстаёт от рынка на 0,5 п.п. NPS держится высоким (<b>71</b>), отток ниже нормы. Основная точка внимания — цифровой канал привлечения, который просел третий месяц подряд.',
+    navigatorId: 'REP-4471',
+    suggestions: ['Сравнить доходность с ипотекой', 'Показать по сегментам клиентов', 'Почему просел цифровой канал', 'Динамика за 12 месяцев'],
+  },
+  'Мои цели на квартал': {
+    charts: [
+      {label:'Выполнение целей', val:'11 / 16', delta:'69%', deltaColor:'var(--amber)', bars:[40,48,55,60,65,69], hiClass:'hi'},
+      {label:'Розница', val:'91%', delta:'план', deltaColor:'var(--stone)', bars:[60,68,74,80,86,91], hiClass:'hi'},
+      {label:'Корпоративный', val:'78%', delta:'план', deltaColor:'var(--stone)', bars:[50,58,64,70,75,78], hiClass:'hi'},
+      {label:'Digital', val:'54%', valColor:'var(--crimson)', delta:'отстаёт', deltaColor:'var(--crimson)', bars:[44,46,48,50,52,54], hiClass:'bad'},
+    ],
+    text: 'Из 16 целей квартала выполнено <b>11</b>. Лучший результат — Розница (<b>91%</b>). Наибольшее отставание — Digital-блок (<b>54%</b>), три цели под риском срыва к концу квартала.',
+    navigatorId: 'REP-4472',
+    suggestions: ['Какие цели под риском', 'Сравнить с прошлым кварталом', 'Детали по Digital-блоку', 'Кто ответственный за отстающие цели'],
+  },
+  'Почему упала маржа': {
+    charts: [
+      {label:'Чистая прибыль', val:'28,4 млрд', valColor:'var(--crimson)', delta:'−8,2%', deltaColor:'var(--crimson)', bars:[82,78,72,64,56,48], hiClass:'bad'},
+      {label:'Процентная маржа', val:'3,8%', valColor:'var(--crimson)', delta:'−0,4 п.п.', deltaColor:'var(--crimson)', bars:[76,72,68,62,56,50], hiClass:'bad'},
+      {label:'Стоимость фондирования', val:'6,1%', delta:'+0,4 п.п.', deltaColor:'var(--crimson)', bars:[48,52,57,62,68,74], hiClass:'bad'},
+      {label:'Операционные расходы', val:'612 млрд', delta:'+6%', deltaColor:'var(--crimson)', bars:[52,55,60,66,74,92], hiClass:'bad'},
+    ],
+    text: 'Маржа снижается из-за роста <b>стоимости фондирования</b> (+0,4 п.п.) на фоне отстающих от рынка ставок по вкладам, и превышения бюджета <b>операционных расходов</b> на 6%. Основной вклад — статьи «Персонал» и «Облачная инфраструктура».',
+    navigatorId: 'REP-4473',
+    suggestions: ['Разбить по статьям OPEX', 'Сравнить с конкурентами', 'Прогноз до конца года', 'Какие меры снизят фондирование'],
+  },
+  'Как дела с ипотекой?': {
+    charts: [
+      {label:'Портфель ипотеки', val:'184 млрд', delta:'+8,1%', deltaColor:'var(--moss)', bars:[54,60,66,72,80,88], hiClass:'hi'},
+      {label:'Партнёрский канал', val:'34%', delta:'+9 п.п.', deltaColor:'var(--moss)', bars:[42,48,54,60,68,78], hiClass:'hi'},
+      {label:'Средний чек', val:'6,2 млн', delta:'+3,4%', deltaColor:'var(--moss)', bars:[50,54,58,62,68,74], hiClass:'hi'},
+      {label:'Просрочка портфеля', val:'1,4%', delta:'+0,2 п.п.', deltaColor:'var(--crimson)', bars:[40,44,48,52,58,64], hiClass:'bad'},
+    ],
+    text: 'Портфель ипотеки опережает план на <b>8%</b> — драйвер роста, партнёрский канал застройщиков, доля которого выросла до <b>34%</b>. Просрочка немного подросла (+0,2 п.п.), но остаётся в норме.',
+    navigatorId: 'REP-4474',
+    suggestions: ['Разбить по партнёрам', 'Сравнить с рынком', 'Динамика просрочки', 'Прогноз портфеля на год'],
+  },
+  'Что с оттоком в премиум сегменте?': {
+    charts: [
+      {label:'Отток Премиум', val:'4,2%', valColor:'var(--crimson)', delta:'+1,8 п.п.', deltaColor:'var(--crimson)', bars:[40,44,50,58,68,80], hiClass:'bad'},
+      {label:'NPS Премиум', val:'58', valColor:'var(--crimson)', delta:'−6', deltaColor:'var(--crimson)', bars:[78,74,68,62,56,50], hiClass:'bad'},
+      {label:'ARPU Премиум', val:'42 тыс.', delta:'−2,1%', deltaColor:'var(--crimson)', bars:[70,68,64,60,56,52], hiClass:'bad'},
+      {label:'Жалобы Премиум', val:'38', delta:'+22%', deltaColor:'var(--crimson)', bars:[40,46,52,60,70,84], hiClass:'bad'},
+    ],
+    text: 'Отток в премиальном сегменте вырос на <b>1,8 п.п.</b>, выход за 2σ от нормы. Совпадает по времени с изменением тарифов 1 июня — NPS и ARPU сегмента одновременно просели.',
+    navigatorId: 'REP-4475',
+    suggestions: ['Что изменилось в тарифах', 'Кто именно уходит', 'Сравнить с массовым сегментом', 'Прогноз оттока на квартал'],
+  },
+  'Клиенты 45+ и цифровые вклады': {
+    charts: [
+      {label:'Доля цифровых открытий 45+', val:'37%', delta:'+19 п.п.', deltaColor:'var(--moss)', bars:[30,36,44,54,66,80], hiClass:'hi'},
+      {label:'Открыто онлайн, тыс.', val:'2,1', delta:'+94%', deltaColor:'var(--moss)', bars:[24,32,42,54,68,86], hiClass:'hi'},
+      {label:'ARPU сегмента 45+', val:'31 тыс.', delta:'+4,2%', deltaColor:'var(--moss)', bars:[50,54,58,62,66,72], hiClass:'hi'},
+      {label:'Возрастная структура', val:'45–60', delta:'растёт', deltaColor:'var(--moss)', bars:[40,46,52,58,64,70], hiClass:'hi'},
+    ],
+    text: 'Клиенты 45+ стали открывать вклады онлайн вдвое чаще — доля цифровых открытий выросла с 18% до <b>37%</b> за квартал. В плане такого сдвига не было — стоит пересмотреть канальную стратегию под этот сегмент.',
+    navigatorId: 'REP-4476',
+    suggestions: ['Сравнить с сегментом 60+', 'Что стало триггером роста', 'Показать по регионам', 'Влияние на портфель вкладов'],
+  },
+  'Сравни каналы продаж за Q2': {
+    charts: [
+      {label:'Отделения', val:'48%', delta:'−3 п.п.', deltaColor:'var(--crimson)', bars:[62,60,58,55,52,48], hiClass:'bad'},
+      {label:'Онлайн', val:'37%', delta:'+8 п.п.', deltaColor:'var(--moss)', bars:[24,28,32,38,44,52], hiClass:'hi'},
+      {label:'Партнёрский канал', val:'11%', delta:'+2 п.п.', deltaColor:'var(--moss)', bars:[30,34,38,42,46,50], hiClass:'hi'},
+      {label:'Колл-центр', val:'4%', delta:'−1 п.п.', deltaColor:'var(--crimson)', bars:[50,48,46,44,42,40], hiClass:'bad'},
+    ],
+    text: 'За квартал структура продаж смещается в сторону <b>онлайн-канала</b> (+8 п.п.) при снижении доли отделений (−3 п.п.). Партнёрский канал стабильно растёт, колл-центр продолжает терять долю.',
+    navigatorId: 'REP-4477',
+    suggestions: ['Разбить по продуктам', 'Сравнить с прошлым Q2', 'Где выше конверсия', 'Прогноз структуры на Q3'],
+  },
+  'Отток по сегментам': {
+    charts: [
+      {label:'Mass', val:'1,8%', delta:'−0,1 п.п.', deltaColor:'var(--moss)', bars:[52,50,48,47,46,45], hiClass:'hi'},
+      {label:'Affluent', val:'2,4%', delta:'+0,3 п.п.', deltaColor:'var(--crimson)', bars:[40,42,45,48,52,56], hiClass:'bad'},
+      {label:'Premium', val:'4,2%', valColor:'var(--crimson)', delta:'+1,8 п.п.', deltaColor:'var(--crimson)', bars:[40,44,50,58,68,80], hiClass:'bad'},
+      {label:'Средний по банку', val:'2,1%', delta:'−0,3 п.п.', deltaColor:'var(--moss)', bars:[70,64,60,56,50,44], hiClass:'hi'},
+    ],
+    text: 'Отток по банку в целом снижается, но в разрезе сегментов картина неоднородна: <b>Premium</b> просел сильнее всего (+1,8 п.п.), тогда как Mass остаётся стабильным. Это маскировалось общим средним показателем.',
+    navigatorId: 'REP-4478',
+    suggestions: ['Что происходит в Premium', 'Сравнить с прошлым годом', 'Причины оттока по сегментам', 'Прогноз на следующий квартал'],
+  },
+};
+
+function buildChartsHtml(charts){
+  return charts.map(c => `
+    <div class="chart-card">
+      <div class="cc-head"><span class="cc-title">${c.label}</span></div>
+      <div class="cc-val" style="${c.valColor?('color:'+c.valColor):''}">${c.val}<span class="cc-delta" style="color:${c.deltaColor}">${c.delta}</span></div>
+      <div class="bars" style="margin-top:10px">
+        ${c.bars.map((h,i)=>`<i class="${i===c.bars.length-1?c.hiClass:''}" style="height:${h}%"></i>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+let chatHistoryList = [];
+let turnCounter = 0;
+
+function renderChatHistory(){
+  document.getElementById('chatHistory').innerHTML = chatHistoryList.map((q,i) =>
+    `<div class="chat-hist-item ${i===chatHistoryList.length-1?'current':''}" onclick="scrollToTurn(${i})">${q}</div>`
+  ).join('');
+}
+
+function scrollToTurn(i){
+  const el = document.getElementById('turn-'+i);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function appendTurn(query){
+  if(!CHAT_DATA[query]) CHAT_DATA[query] = CHAT_DATA['Что у нас с вкладами?'];
+  const data = CHAT_DATA[query];
+  const idx = turnCounter++;
+  chatHistoryList.push(query);
+
+  const thread = document.getElementById('chatThread');
+  const turn = document.createElement('div');
+  turn.className = 'chat-turn';
+  turn.id = 'turn-'+idx;
+  turn.innerHTML = `
+    <div class="chat-user-msg">${query}</div>
+    <div class="turn-header">
+      <div class="chat-gen"><i></i>Собрано за 2,1 сек из 5 источников</div>
+      <div class="turn-actions">
+        <button class="turn-icon-btn" onclick="toggleActionIcon(this,'Ссылка скопирована')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        </button>
+        <button class="turn-icon-btn" onclick="toggleActionIcon(this,'Сохранено в избранное')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2L12 16.4 5.7 20.8 8 13.6l-6-4.4h7.6z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="chat-charts">${buildChartsHtml(data.charts)}</div>
+    <div class="chat-text">${data.text}</div>
+    <div class="chat-navigator">
+      <a href="#" class="nav-link" onclick="return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+        Открыть отчёт в Навигаторе · ${data.navigatorId}
+      </a>
+    </div>`;
+  thread.appendChild(turn);
+
+  document.getElementById('chatSuggestions').innerHTML = data.suggestions.map(s =>
+    `<div class="chip-sg" onclick="appendTurn('${s.replace(/'/g,"\\'")}')">${s}</div>`
+  ).join('');
+
+  renderChatHistory();
+
+  requestAnimationFrame(()=>{
+    document.querySelector('.chat-mid').scrollTop = document.querySelector('.chat-mid').scrollHeight;
+  });
+}
+
+function openChatWithQuery(q){
+  document.getElementById('heroInput').value = q;
+  openChat();
+}
+
+function setQuery(text){
+  document.getElementById('heroInput').value = text;
+}
+
+function switchObserve(key){
+  const isProfit = key === 'profit';
+  document.getElementById('obsCharts-profit').style.display = isProfit ? 'grid' : 'none';
+  document.getElementById('obsCharts-vklady').style.display = isProfit ? 'none' : 'grid';
+  document.getElementById('treeProfit').classList.toggle('active', isProfit);
+  document.getElementById('treeVklady').classList.toggle('active', !isProfit);
+  document.getElementById('obsSearchInput').value = isProfit ? 'Чистая прибыль' : 'Что у нас с вкладами?';
+  document.getElementById('obsReportLabel').textContent = isProfit
+    ? 'Открыть отчёт «Чистая прибыль» в Навигаторе · REP-4401'
+    : 'Открыть отчёт «Вклады» в Навигаторе · REP-4471';
+}
+
+function showObservePage(key){
+  showPage('observe');
+  switchObserve(key || 'profit');
+}
+
+function toggleActionIcon(btn, msg){
+  btn.classList.add('active');
+  let toast = btn.querySelector('.chat-toast');
+  if(!toast){
+    toast = document.createElement('span');
+    toast.className = 'chat-toast';
+    btn.appendChild(toast);
+  }
+  toast.textContent = msg;
+  requestAnimationFrame(()=>toast.classList.add('show'));
+  setTimeout(()=>{ toast.classList.remove('show'); btn.classList.remove('active'); }, 1800);
+}
+
+function openChat(){
+  const q = document.getElementById('heroInput').value.trim() || 'Что у нас с вкладами?';
+  document.getElementById('chatThread').innerHTML = '';
+  chatHistoryList = [];
+  turnCounter = 0;
+  document.getElementById('page-home').classList.remove('on');
+  document.getElementById('page-observe').classList.remove('on');
+  document.getElementById('page-manage').classList.remove('on');
+  document.getElementById('chatScreen').classList.add('on');
+  document.querySelector('.top').style.display = 'none';
+  appendTurn(q);
+}
+
+function closeChat(){
+  document.getElementById('chatScreen').classList.remove('on');
+  document.querySelector('.top').style.display = 'flex';
+  showPage('home');
+}
+
+function sendContinue(){
+  const input = document.getElementById('chatContinueInput');
+  const q = input.value.trim();
+  if(q){ appendTurn(q); input.value=''; }
+}
+document.getElementById('chatContinueInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter') sendContinue();
+});
+
+function toastAction(btn, toastId){
+  btn.classList.add('active');
+  const t = document.getElementById(toastId);
+  t.classList.add('show');
+  setTimeout(()=>{ t.classList.remove('show'); btn.classList.remove('active'); }, 1800);
+}
+
+const MANAGE_DATA = {
+  vklady: {
+    title: 'Конверсия обращений по вкладам: 3,1% при плане 4,5%',
+    sub: 'Критичное отклонение · третий месяц подряд · обнаружено 16.08 в 06:40',
+    chain: [
+      {step:'Что упало', name:'Конверсия обращений', val:'3,1% · план 4,5%', color:'var(--crimson)'},
+      {step:'Где именно', name:'Цифровой канал', val:'−2,1 п.п. из −1,4 общего'},
+      {step:'На что влияет', name:'Портфель вкладов', val:'недобор 18 млрд', color:'var(--amber)'},
+      {step:'Итог', name:'Процентный доход', val:'−3,4% к плану', color:'var(--crimson)'},
+    ],
+    factors: [
+      {name:'Ставка ниже рынка', pct:57, val:'−8,0 п.п.', color:'var(--crimson)'},
+      {name:'Рост отказов скоринга', pct:29, val:'−4,0 п.п.', color:'var(--amber)'},
+      {name:'Падение трафика канала X', pct:21, val:'−3,0 п.п.', color:'var(--amber)'},
+      {name:'Сезонность июня', pct:11, val:'−1,5 п.п.', color:'var(--stone)'},
+    ],
+    scenarios: [
+      {name:'Поднять ставку на 0,3 п.п.', effect:'Портфель +2,1% · маржа −0,2 п.п.',
+       assignees:['Выбрать подчинённого…','Руководитель продукта «Вклады»','Руководитель тарифной политики','Аналитик розничного блока']},
+      {name:'Смягчить скоринг для сегмента 45+', effect:'Конверсия +0,6 п.п. · риск +0,1 п.п.',
+       assignees:['Выбрать подчинённого…','Руководитель риск-скоринга','Руководитель продукта «Вклады»']},
+      {name:'Перераспределить бюджет канала X', effect:'Обращения +12 тыс. · CAC +8%',
+       assignees:['Выбрать подчинённого…','Руководитель маркетинга','Аналитик розничного блока']},
+    ],
+  },
+  opex: {
+    title: 'Операционные расходы превысили бюджет на 6%',
+    sub: '612 млрд при бюджете 577 млрд · критичное отклонение · обнаружено 16.08 в 06:40',
+    chain: [
+      {step:'Что превышено', name:'Операционные расходы', val:'612 млрд · +6%', color:'var(--crimson)'},
+      {step:'Где именно', name:'Облачная инфраструктура', val:'+18% к бюджету статьи'},
+      {step:'На что влияет', name:'Чистая прибыль', val:'недобор ~9 млрд', color:'var(--amber)'},
+      {step:'Итог', name:'Рентабельность (ROE)', val:'−0,4 п.п.', color:'var(--crimson)'},
+    ],
+    factors: [
+      {name:'Рост цен облачных провайдеров', pct:44, val:'−3,8 млрд', color:'var(--crimson)'},
+      {name:'Незапланированный найм в IT', pct:27, val:'−2,3 млрд', color:'var(--amber)'},
+      {name:'Рост числа транзакций (нагрузка)', pct:18, val:'−1,6 млрд', color:'var(--amber)'},
+      {name:'Курсовая разница по контрактам', pct:11, val:'−0,9 млрд', color:'var(--stone)'},
+    ],
+    scenarios: [
+      {name:'Пересмотреть контракт с облачным провайдером', effect:'OPEX −1,2% · миграция ~2 мес',
+       assignees:['Выбрать подчинённого…','Директор по IT-инфраструктуре','Финансовый директор']},
+      {name:'Заморозить найм в IT до конца квартала', effect:'OPEX −0,8% · риск замедления проектов',
+       assignees:['Выбрать подчинённого…','HRBP блока Technology','Директор по IT-инфраструктуре']},
+      {name:'Перейти на резервированные инстансы', effect:'OPEX −2,1% · CAPEX +40 млн разово',
+       assignees:['Выбрать подчинённого…','Директор по IT-инфраструктуре','Финансовый директор']},
+    ],
+  },
+  premium: {
+    title: 'Отток в премиальном сегменте вырос на 1,8 п.п.',
+    sub: '4,2% при норме 2,4% · критичное отклонение · обнаружено 15.08 в 09:15',
+    chain: [
+      {step:'Что выросло', name:'Отток Premium', val:'4,2% · норма 2,4%', color:'var(--crimson)'},
+      {step:'Где именно', name:'Баланс свыше 10 млн', val:'−2,4 п.п. из −1,8 общего'},
+      {step:'На что влияет', name:'AUM Premium', val:'недобор 6,4 млрд', color:'var(--amber)'},
+      {step:'Итог', name:'Комиссионный доход', val:'−2,8% к плану', color:'var(--crimson)'},
+    ],
+    factors: [
+      {name:'Изменение тарифов 1 июня', pct:48, val:'−1,0 п.п.', color:'var(--crimson)'},
+      {name:'Снижение NPS персональных менеджеров', pct:26, val:'−0,5 п.п.', color:'var(--amber)'},
+      {name:'Переход к конкурентам с большей ставкой', pct:17, val:'−0,3 п.п.', color:'var(--amber)'},
+      {name:'Сокращение персональных менеджеров', pct:9, val:'−0,2 п.п.', color:'var(--stone)'},
+    ],
+    scenarios: [
+      {name:'Вернуть льготные тарифы для баланса >10 млн', effect:'Отток −0,9 п.п. · маржа −0,3 п.п.',
+       assignees:['Выбрать подчинённого…','Руководитель Private Banking','Финансовый директор']},
+      {name:'Усилить персональный сервис', effect:'NPS +8 · costs +15 млн/мес',
+       assignees:['Выбрать подчинённого…','Директор по клиентскому сервису','Руководитель Private Banking']},
+      {name:'Запустить retention-кампанию для группы риска', effect:'Отток −0,5 п.п. · бюджет 20 млн',
+       assignees:['Выбрать подчинённого…','Руководитель CRM-маркетинга','Директор по клиентскому сервису']},
+    ],
+  },
+};
+
+function showManagePage(key){
+  const data = MANAGE_DATA[key] || MANAGE_DATA.vklady;
+  document.getElementById('mngTitle').textContent = data.title;
+  document.getElementById('mngSub').textContent = data.sub;
+
+  document.getElementById('mngChain').innerHTML = data.chain.map(c => `
+    <div class="mng-link">
+      <div class="ml-step">${c.step}</div>
+      <div class="ml-name">${c.name}</div>
+      <div class="ml-val" style="${c.color?('color:'+c.color):''}">${c.val}</div>
+    </div>`).join('');
+
+  document.getElementById('mngFactors').innerHTML = data.factors.map(f => `
+    <div class="mng-factor">
+      <span>${f.name}</span>
+      <span class="mf-bar"><span style="width:${f.pct}%;background:${f.color}"></span></span>
+      <span class="mf-num" style="color:${f.color}">${f.val}</span>
+    </div>`).join('');
+
+  document.getElementById('mngScenarios').innerHTML = data.scenarios.map((s,i) => `
+    <div class="scenario-card">
+      <div class="sc-top">
+        <span class="sc-name">${s.name}</span>
+        <span class="sc-effect">${s.effect}</span>
+      </div>
+      <div class="sc-bottom" id="mng-${key}-${i}-form">
+        <select class="sc-assignee">
+          ${s.assignees.map(a=>`<option>${a}</option>`).join('')}
+        </select>
+        <button class="sc-assign-btn" onclick="assignTask('mng-${key}-${i}')">Назначить задачу</button>
+      </div>
+      <div class="task-sent" id="mng-${key}-${i}-sent">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        Задача назначена
+      </div>
+    </div>`).join('');
+
+  showPage('manage');
+}
+</script>
+
+<script>
+function showPage(id){
+  document.getElementById('chatScreen').classList.remove('on');
+  document.querySelector('.top').style.display = 'flex';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  document.getElementById('backBtn').style.display = id==='home' ? 'none' : 'flex';
+  window.scrollTo(0,0);
+}
+function goHome(){ showPage('home'); }
+function assignTask(id){
+  document.getElementById(id+'-form').style.display='none';
+  document.getElementById(id+'-sent').classList.add('show');
+}
+</script>
+
+<script>
+document.querySelectorAll('.fb-tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.fb-tab').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    const f = t.dataset.filter;
+    let shown = 0;
+    document.querySelectorAll('.card').forEach(card=>{
+      const type = card.dataset.type;
+      const match = (f==='all') || (type===f);
+      card.style.display = match ? 'grid' : 'none';
+      if(match) shown++;
+    });
+    document.getElementById('fbCount').textContent = shown + (f==='all' ? ' событий за сутки' : f==='watch' ? ' отклонений' : ' инсайтов');
+  }
+});
+
+function toggleTheme(){
+  document.documentElement.classList.toggle('dark');
+  try{localStorage.setItem('theme', document.documentElement.classList.contains('dark')?'dark':'light')}catch(e){}
+}
+try{
+  if(localStorage.getItem('theme')==='dark') document.documentElement.classList.add('dark');
+}catch(e){}
+</script>
+</body>
+</html>
