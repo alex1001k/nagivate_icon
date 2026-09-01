@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Блок-схема: от данных к действию</title>
+<style>
+:root{
+  --forest:#12352A;
+  --ink:#1A211E;
+  --paper:#FAFAF7;
+  --card:#FFFFFF;
+  --line:#8FA396;
+  --moss:#3E7D4F;
+  --amber:#9C6B14;
+  --amber-bg:#FBF0DC;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  background:var(--paper);color:var(--ink);
+  padding:24px 20px 50px;
+}
+.wrap{max-width:1360px;margin:0 auto}
+.page-title{font-size:19px;font-weight:700;color:var(--forest);margin-bottom:4px}
+.page-sub{font-size:12px;color:#666;margin-bottom:18px}
+.diagram-box{
+  background:var(--card);border:1px solid #E0DED5;border-radius:12px;
+  padding:10px;overflow-x:auto;
+}
+svg{display:block;margin:0 auto}
+.legend{
+  display:flex;gap:22px;margin-top:16px;padding:12px 16px;
+  background:var(--card);border:1px solid #E0DED5;border-radius:10px;
+  font-size:11px;color:#555;flex-wrap:wrap;align-items:center;
+}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-box{width:16px;height:12px;border-radius:3px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="page-title">От данных к действию — блок-схема с ветвлением</div>
+  <div class="page-sub">Прямоугольники — объекты на пути. Жёлтые подписи на стрелках — агент/инструмент, который производит переход. Пунктир — путь гипотезы обратно в наблюдение.</div>
+
+  <div class="diagram-box">
+<svg width="1300" height="1000" viewBox="0 0 1300 1000" xmlns="http://www.w3.org/2000/svg">
+
+  <defs>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#3E7D4F"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#9C6B14"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#7A7A72"/>
+    </marker>
+  </defs>
+
+  <!-- ══════════════════ СВЯЗИ (рисуем ДО узлов, чтобы узлы легли поверх) ══════════════════ -->
+
+  <!-- 1. Данные -> Инсайт -->
+  <path d="M 700 90 L 700 168" stroke="#3E7D4F" stroke-width="2.2" fill="none" marker-end="url(#arrowGreen)"/>
+  <rect x="608" y="112" width="184" height="26" rx="13" fill="#FBF0DC"/>
+  <text x="700" y="129" font-size="11" font-weight="700" fill="#9C6B14" text-anchor="middle">Семантический слой</text>
+
+  <!-- 2. Инсайт -> Гипотеза -->
+  <path d="M 700 260 L 700 338" stroke="#3E7D4F" stroke-width="2.2" fill="none" marker-end="url(#arrowGreen)"/>
+  <rect x="558" y="282" width="284" height="26" rx="13" fill="#FBF0DC"/>
+  <text x="700" y="299" font-size="11" font-weight="700" fill="#9C6B14" text-anchor="middle">Агент факторного анализа + онтология</text>
+
+  <!-- 3. Гипотеза -> Наблюдение (петля влево) -->
+  <path d="M 550 350 C 430 350, 420 230, 330 205" stroke="#3E7D4F" stroke-width="2" fill="none" stroke-dasharray="7 5" marker-end="url(#arrowGreen)"/>
+  <rect x="352" y="238" width="150" height="40" rx="10" fill="#EAF1EC" stroke="#3E7D4F" stroke-width="1"/>
+  <text x="427" y="255" font-size="10" font-weight="700" fill="#2E6B44" text-anchor="middle">Гипотеза =</text>
+  <text x="427" y="269" font-size="10" font-weight="700" fill="#2E6B44" text-anchor="middle">новая метрика / алерт</text>
+
+  <!-- 4. Гипотеза -> Библиотека (вниз-влево) -->
+  <path d="M 610 400 C 480 440, 320 440, 220 468" stroke="#9C6B14" stroke-width="2.2" fill="none" marker-end="url(#arrowAmber)"/>
+  <rect x="330" y="410" width="150" height="26" rx="13" fill="#FBF0DC"/>
+  <text x="405" y="427" font-size="10.5" font-weight="700" fill="#9C6B14" text-anchor="middle">Фиксация гипотезы</text>
+
+  <!-- 5. Гипотеза -> АБ-тест (вниз-вправо) -->
+  <path d="M 790 400 C 920 440, 1050 440, 1120 468" stroke="#9C6B14" stroke-width="2.2" fill="none" marker-end="url(#arrowAmber)"/>
+  <rect x="880" y="410" width="230" height="26" rx="13" fill="#FBF0DC"/>
+  <text x="995" y="427" font-size="10.5" font-weight="700" fill="#9C6B14" text-anchor="middle">Агент постановки эксперимента</text>
+
+  <!-- 6. АБ-тест -> Диамант решения -->
+  <path d="M 1120 540 L 1120 596" stroke="#3E7D4F" stroke-width="2.2" fill="none" marker-end="url(#arrowGreen)"/>
+
+  <!-- 7. Диамант -> Действие (да) -->
+  <path d="M 1120 700 L 1120 758" stroke="#3E7D4F" stroke-width="2.2" fill="none" marker-end="url(#arrowGreen)"/>
+  <rect x="1088" y="712" width="64" height="24" rx="12" fill="#EAF1EC" stroke="#3E7D4F" stroke-width="1"/>
+  <text x="1120" y="728" font-size="10.5" font-weight="700" fill="#2E6B44" text-anchor="middle">да</text>
+
+  <!-- 8. Диамант -> Библиотека (нет) -->
+  <path d="M 1030 650 C 700 650, 500 610, 380 550" stroke="#7A7A72" stroke-width="2" fill="none" stroke-dasharray="5 4" marker-end="url(#arrowGray)"/>
+  <rect x="600" y="600" width="270" height="26" rx="13" fill="#F1F0EC"/>
+  <text x="735" y="617" font-size="10.5" font-weight="700" fill="#5A5A52" text-anchor="middle">нет — фиксируем как опровергнутую</text>
+
+  <!-- 9. Действие -> Наблюдение (большая петля по левому краю) -->
+  <path d="M 980 795 C 700 795, 60 795, 60 400 C 60 280, 100 230, 168 205"
+        stroke="#3E7D4F" stroke-width="2.2" fill="none" marker-end="url(#arrowGreen)"/>
+  <rect x="25" y="480" width="150" height="40" rx="10" fill="#EAF1EC" stroke="#3E7D4F" stroke-width="1"/>
+  <text x="100" y="497" font-size="10" font-weight="700" fill="#2E6B44" text-anchor="middle">Мониторинг</text>
+  <text x="100" y="511" font-size="10" font-weight="700" fill="#2E6B44" text-anchor="middle">эффекта действия</text>
+
+  <!-- ══════════════════ УЗЛЫ (объекты) ══════════════════ -->
+
+  <!-- Данные -->
+  <rect x="550" y="30" width="300" height="60" rx="12" fill="#FFFFFF" stroke="#12352A" stroke-width="2"/>
+  <text x="700" y="55" font-size="15" font-weight="700" fill="#12352A" text-anchor="middle">Данные</text>
+  <text x="700" y="75" font-size="10" fill="#777" text-anchor="middle">сырые источники, витрины</text>
+
+  <!-- Наблюдение (слева, целевой узел петель) -->
+  <rect x="60" y="170" width="260" height="60" rx="12" fill="#EAF1EC" stroke="#12352A" stroke-width="2.4"/>
+  <text x="190" y="195" font-size="15" font-weight="700" fill="#12352A" text-anchor="middle">Наблюдение</text>
+  <text x="190" y="215" font-size="10" fill="#666" text-anchor="middle">статус метрики: факт / план / σ</text>
+
+  <!-- Инсайт -->
+  <rect x="550" y="170" width="300" height="60" rx="12" fill="#FFFFFF" stroke="#12352A" stroke-width="2"/>
+  <text x="700" y="195" font-size="15" font-weight="700" fill="#12352A" text-anchor="middle">Инсайт</text>
+  <text x="700" y="215" font-size="10" fill="#777" text-anchor="middle">отклонение зафиксировано и объяснено</text>
+
+  <!-- Гипотеза -->
+  <rect x="550" y="340" width="300" height="60" rx="12" fill="#FFFFFF" stroke="#12352A" stroke-width="2"/>
+  <text x="700" y="365" font-size="15" font-weight="700" fill="#12352A" text-anchor="middle">Гипотеза</text>
+  <text x="700" y="385" font-size="10" fill="#777" text-anchor="middle">предполагаемая причина и действие</text>
+
+  <!-- Библиотека исследований -->
+  <rect x="60" y="470" width="300" height="70" rx="12" fill="#F3EEDF" stroke="#9C6B14" stroke-width="2.2"/>
+  <text x="210" y="497" font-size="14" font-weight="700" fill="#6B4E10" text-anchor="middle">Библиотека исследований</text>
+  <text x="210" y="516" font-size="9.5" fill="#7A6A45" text-anchor="middle">накопленные гипотезы и их исходы —</text>
+  <text x="210" y="529" font-size="9.5" fill="#7A6A45" text-anchor="middle">подтверждённые и опровергнутые</text>
+
+  <!-- АБ-тест -->
+  <rect x="980" y="470" width="280" height="70" rx="12" fill="#FFFFFF" stroke="#12352A" stroke-width="2"/>
+  <text x="1120" y="497" font-size="14" font-weight="700" fill="#12352A" text-anchor="middle">АБ-тест</text>
+  <text x="1120" y="516" font-size="9.5" fill="#777" text-anchor="middle">гипотеза проверяется</text>
+  <text x="1120" y="529" font-size="9.5" fill="#777" text-anchor="middle">на части аудитории</text>
+
+  <!-- Диамант решения -->
+  <polygon points="1120,596 1210,650 1120,704 1030,650" fill="#FFFFFF" stroke="#9C6B14" stroke-width="2.2"/>
+  <text x="1120" y="645" font-size="11" font-weight="700" fill="#6B4E10" text-anchor="middle">Гипотеза</text>
+  <text x="1120" y="659" font-size="11" font-weight="700" fill="#6B4E10" text-anchor="middle">подтвердилась?</text>
+
+  <!-- Действие / Управление -->
+  <rect x="980" y="760" width="280" height="65" rx="12" fill="#EAF1EC" stroke="#12352A" stroke-width="2.4"/>
+  <text x="1120" y="787" font-size="14" font-weight="700" fill="#12352A" text-anchor="middle">Действие / Управление</text>
+  <text x="1120" y="805" font-size="9.5" fill="#666" text-anchor="middle">решение внедряется в процесс</text>
+
+</svg>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-box" style="background:#FFFFFF;border:2px solid #12352A"></span>Объект / артефакт</div>
+    <div class="legend-item"><span class="legend-box" style="background:#EAF1EC;border:2px solid #12352A"></span>Точка входа в цикл наблюдения</div>
+    <div class="legend-item"><span class="legend-box" style="background:#F3EEDF;border:2px solid #9C6B14"></span>Накопление знания</div>
+    <div class="legend-item"><span class="legend-box" style="background:#FFFFFF;border:2px solid #9C6B14;transform:rotate(45deg)"></span>Точка решения</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#3E7D4F;display:inline-block"></span>Основной путь / подтверждено</div>
+    <div class="legend-item"><span style="width:20px;height:2px;background:#7A7A72;display:inline-block;border-top:2px dashed #7A7A72"></span>Опровергнуто</div>
+    <div class="legend-item"><span style="background:#FBF0DC;padding:2px 8px;border-radius:8px;color:#9C6B14;font-weight:700;font-size:10px">жёлтая подпись</span>агент/инструмент перехода</div>
+  </div>
+
+</div>
+</body>
+</html>
