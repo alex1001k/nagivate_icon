@@ -1,0 +1,180 @@
+<mxfile host="app.diagrams.net" modified="2026-09-15T00:00:00.000Z" agent="Claude" version="24.0.0" type="device">
+  <diagram id="cycle-diagram-v2" name="Наблюдение-Исследование-Управление">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1780" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ══════ ФОН ПОЛОС ══════ -->
+        <mxCell id="b1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F7F9F5;strokeColor=none;movable=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="0" y="20" width="1750" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF9F3;strokeColor=none;movable=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="0" y="550" width="1750" height="920" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F5F8F6;strokeColor=none;movable=0;resizable=0;" vertex="1" parent="1">
+          <mxGeometry x="0" y="1470" width="1750" height="310" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bd1" value="" style="endArrow=none;dashed=1;dashPattern=8 6;strokeColor=#B9B9AE;strokeWidth=1.5;html=1;movable=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="550" as="sourcePoint" /><mxPoint x="1750" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bd2" value="" style="endArrow=none;dashed=1;dashPattern=8 6;strokeColor=#B9B9AE;strokeWidth=1.5;html=1;movable=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="1470" as="sourcePoint" /><mxPoint x="1750" y="1470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="t1" value="НАБЛЮДЕНИЕ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#12352A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="30" width="160" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="t2" value="ИССЛЕДОВАНИЕ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#12352A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="565" width="160" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="t3" value="УПРАВЛЕНИЕ" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#12352A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1485" width="160" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ══════ БАНД 1: НАБЛЮДЕНИЕ ══════ -->
+
+        <mxCell id="n_src" value="&lt;b&gt;Источники данных&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;font-weight:normal;color:#777;&quot;&gt;A: транзакции · B: клиенты · C: внешние&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=1.8;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="90" width="520" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_src" value="&lt;b&gt;Нужно:&lt;/b&gt; подключение источников, единая схема / онтология данных&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; данные доступны для агрегации вокруг продукта" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="90" width="520" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_prod" value="&lt;b&gt;Продукт&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;font-weight:normal;color:#777;&quot;&gt;бизнес-сущность, окружённая данными&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2.4;fontSize=15;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="200" width="520" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_prod" value="&lt;b&gt;Нужно:&lt;/b&gt; онтология продукта, карта связанных сущностей&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; единая точка сборки данных вокруг продукта" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="200" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_an" value="&lt;b&gt;Поиск отклонений и связей&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;аномалии · корреляции · зависимости&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="320" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n_mon" value="&lt;b&gt;Мониторинг метрик в динамике&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;тренды, сезонность, без немедленного триггера&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=12.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="800" y="320" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_an" value="&lt;b&gt;Нужно:&lt;/b&gt; агент анализа + стандартные алгоритмы (библиотека) для отклонений; дашборд / тайм-серии для динамики&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; список отклонений и зависимостей с оценкой значимости + видимость трендов в динамике" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="320" width="520" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_out" value="&lt;b&gt;Наблюдение: результат&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#666;&quot;&gt;статус метрики: норма / отклонение / новая связь&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#EAF1EC;strokeColor=#12352A;strokeWidth=2.4;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="440" width="520" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_out" value="&lt;b&gt;Нужно:&lt;/b&gt; агрегация сигналов анализа и мониторинга&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; статус метрики готов к передаче в исследование" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="440" width="520" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ══════ БАНД 2: ИССЛЕДОВАНИЕ ══════ -->
+
+        <mxCell id="n_norma" value="&lt;b&gt;Норма — цикл закрыт&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;font-weight:normal;color:#777;&quot;&gt;порог значимости не пройден. Результат: ресурсы investigation не тратятся&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#F1F0EC;strokeColor=#7A7A72;strokeWidth=1.6;dashed=1;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="570" width="340" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_drv" value="&lt;b&gt;Определение драйверов&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;анализ всех метрик, выделение ключевых драйверов&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="580" width="520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_drv" value="&lt;b&gt;Нужно:&lt;/b&gt; агент факторного анализа, доступ ко всем метрикам продукта&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; ранжированный список ключевых драйверов отклонения" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="580" width="520" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_rec" value="&lt;b&gt;Подбор рекомендаций&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;варианты действий под выявленные драйверы&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="710" width="520" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_rec" value="&lt;b&gt;Нужно:&lt;/b&gt; библиотека паттернов / рекомендаций, бизнес-правила&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; набор возможных действий под каждый драйвер" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="710" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_syn" value="&lt;b&gt;Синтез гипотез&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;синтез данных на уровне моделей, формирование рабочих гипотез&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="830" width="520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_syn" value="&lt;b&gt;Нужно:&lt;/b&gt; синтез на уровне моделей, онтология причинно-следственных связей&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; рабочие гипотезы — причина → действие → ожидаемый эффект" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="830" width="520" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d1" value="Что делаем с гипотезой?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9C6B14;strokeWidth=2.2;fontSize=12;fontStyle=1;fontColor=#6B4E10;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="660" y="970" width="240" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_exp" value="&lt;b&gt;Эксперимент: пилот / АБ-тест&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#777;&quot;&gt;проверка на части аудитории&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#12352A;strokeWidth=2;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1160" width="520" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_exp" value="&lt;b&gt;Нужно:&lt;/b&gt; агент постановки эксперимента, доступ к сегменту аудитории&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; измеренный эффект гипотезы на выборке" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="1160" width="520" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_lib" value="&lt;b&gt;Библиотека исследований и знаний&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9px;font-weight:normal;color:#7A6A45;&quot;&gt;гипотезы, алгоритмы, подтверждённые и опровергнутые исходы&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#F3EEDF;strokeColor=#9C6B14;strokeWidth=2.2;fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1170" width="400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_lib" value="&lt;b&gt;Нужно:&lt;/b&gt; регулярная модерация и тегирование (агент / аналитик)&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; растущая база знаний, обновляет алгоритмы наблюдения каждый цикл" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1320" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="d2" value="Гипотеза подтвердилась?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9C6B14;strokeWidth=2.2;fontSize=12;fontStyle=1;fontColor=#6B4E10;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="670" y="1295" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- ══════ БАНД 3: УПРАВЛЕНИЕ ══════ -->
+
+        <mxCell id="n_act" value="&lt;b&gt;Действие / внедрение&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#666;&quot;&gt;решение применяется к продукту&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#EAF1EC;strokeColor=#12352A;strokeWidth=2.2;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1500" width="520" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_act" value="&lt;b&gt;Нужно:&lt;/b&gt; владелец продукта / процесса, ресурс на внедрение&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; решение запущено в продукте" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="1500" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n_new" value="&lt;b&gt;Новый набор действий&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;font-weight:normal;color:#666;&quot;&gt;изменения в бизнес-алгоритмах / процессах&lt;/span&gt;" style="rounded=1;arcSize=14;whiteSpace=wrap;html=1;fillColor=#EAF1EC;strokeColor=#12352A;strokeWidth=2.4;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1620" width="520" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nt_new" value="&lt;b&gt;Нужно:&lt;/b&gt; фиксация конфигурации изменений&lt;br&gt;&lt;br&gt;&lt;b&gt;Результат:&lt;/b&gt; обновлённый набор бизнес-алгоритмов, готов к мониторингу эффекта" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#FCFCFA;strokeColor=#D8D6CC;strokeWidth=1;fontSize=10;align=left;spacingLeft=8;spacingRight=8;verticalAlign=middle;fontColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="1620" width="520" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ══════ СВЯЗИ ══════ -->
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_src" target="n_prod"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_prod" target="n_an"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_prod" target="n_mon"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_an" target="n_out"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_mon" target="n_out"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e6" value="обновление алгоритмов из библиотеки" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.2;entryX=0;entryY=0.7;strokeColor=#3E7D4F;strokeWidth=2;endArrow=block;endFill=1;fontColor=#2E6B44;fontStyle=1;fontSize=10;labelBackgroundColor=#EAF1EC;" edge="1" parent="1" source="n_lib" target="n_an"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e7" value="часть метрик — требует объяснения" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;fontColor=#9C6B14;fontStyle=1;fontSize=10;labelBackgroundColor=#FBF0DC;" edge="1" parent="1" source="n_out" target="n_drv"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="остальное — норма" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7A7A72;strokeWidth=1.8;dashed=1;dashPattern=6 5;endArrow=block;endFill=1;fontColor=#5A5A52;fontStyle=1;fontSize=9.5;labelBackgroundColor=#F1F0EC;" edge="1" parent="1" source="n_out" target="n_norma"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_drv" target="n_rec"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_rec" target="n_syn"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_syn" target="d1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e12" value="Согласиться → взять в работу" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;fontColor=#2E6B44;fontStyle=1;fontSize=10;labelBackgroundColor=#EAF1EC;" edge="1" parent="1" source="d1" target="n_exp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" value="Отказаться с комментарием" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.3;strokeColor=#7A7A72;strokeWidth=2;dashed=1;dashPattern=6 5;endArrow=block;endFill=1;fontColor=#5A5A52;fontStyle=1;fontSize=10;labelBackgroundColor=#F1F0EC;" edge="1" parent="1" source="d1" target="n_lib"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" value="Доисследование (DA)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.35;entryX=0;entryY=0.55;strokeColor=#9C6B14;strokeWidth=2;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;fontColor=#9C6B14;fontStyle=1;fontSize=10;labelBackgroundColor=#FBF0DC;" edge="1" parent="1" source="d1" target="n_drv">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="460" y="1040"/><mxPoint x="460" y="625"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_exp" target="d2"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e16" value="да" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;fontColor=#2E6B44;fontStyle=1;fontSize=10.5;labelBackgroundColor=#EAF1EC;" edge="1" parent="1" source="d2" target="n_act"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e17" value="подтверждено → новое знание" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.3;entryX=1;entryY=0.3;strokeColor=#3E7D4F;strokeWidth=2;endArrow=block;endFill=1;fontColor=#2E6B44;fontStyle=1;fontSize=10;labelBackgroundColor=#EAF1EC;" edge="1" parent="1" source="d2" target="n_lib"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e18" value="опровергнутая гипотеза" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.7;entryX=1;entryY=0.7;strokeColor=#7A7A72;strokeWidth=2;dashed=1;dashPattern=6 5;endArrow=block;endFill=1;fontColor=#5A5A52;fontStyle=1;fontSize=10;labelBackgroundColor=#F1F0EC;" edge="1" parent="1" source="d2" target="n_lib"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e19" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#3E7D4F;strokeWidth=2.2;endArrow=block;endFill=1;" edge="1" parent="1" source="n_act" target="n_new"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e20" value="Мониторинг эффекта действия → новое наблюдение" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#3E7D4F;strokeWidth=2.6;endArrow=block;endFill=1;fontColor=#2E6B44;fontStyle=1;fontSize=10;labelBackgroundColor=#EAF1EC;" edge="1" parent="1" source="n_new" target="n_prod">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="40" y="1660"/><mxPoint x="40" y="240"/></Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
